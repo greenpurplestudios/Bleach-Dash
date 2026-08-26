@@ -1,0 +1,10 @@
+<!doctype html><html><body style="margin:0;background:#111"><iframe id="g" src="index.html" style="width:1100px;height:520px;border:0"></iframe><script>
+const f=document.getElementById('g');
+f.onload=()=>{
+  const w=f.contentWindow;
+  setTimeout(()=>w.document.getElementById('start').click(),150);
+  setTimeout(()=>{for(let i=0;i<3;i++) w.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyM',key:'m',bubbles:true}));},450);
+  setTimeout(()=>w.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyX',key:'x',bubbles:true})),800);
+  setTimeout(()=>w.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyX',key:'x',bubbles:true})),1500);
+};
+</script></body></html>

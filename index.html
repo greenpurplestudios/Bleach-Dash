@@ -1,0 +1,1833 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bleach Dash — Ichigo Variable Width Attack</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07080b;color:#fff;font-family:Arial,Helvetica,sans-serif;touch-action:none}body{display:grid;place-items:center}
+#game{width:100vw;height:100vh;position:relative;background:#090b10;overflow:hidden;border:0;box-shadow:none}
+canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+#hud{position:absolute;top:18px;left:20px;right:20px;display:flex;justify-content:space-between;pointer-events:none;font-weight:700;letter-spacing:1px}#hud span{background:#0a0c10cc;padding:8px 12px;border:1px solid #30333b}
+#controls{position:absolute;left:20px;bottom:16px;display:flex;gap:8px;pointer-events:none;opacity:.8}#controls span{background:#090b10b8;border:1px solid #30333b;padding:6px 9px;font-size:11px;color:#c7cad1}
+#overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(180deg,#02050bc7,#050810e6),url("assets/bg_night.jpg") center/cover no-repeat;z-index:20}.panel{width:min(940px,96vw);height:100vh;min-height:100vh;padding:0 28px;border:2px solid #263b6c;background:linear-gradient(180deg,#0508129e,#050812d4),url("assets/bg_night.jpg") center/cover no-repeat;box-shadow:0 0 45px #071a45aa;max-width:940px;display:flex;flex-direction:column;justify-content:center}.main-menu-panel{position:relative;overflow:hidden;isolation:isolate}.main-menu-panel::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 13%,#d9f3ff22 0 5%,transparent 14%),radial-gradient(circle at 16% 32%,#167dff18 0 8%,transparent 22%),radial-gradient(circle at 85% 55%,#ff6a1f14 0 7%,transparent 20%),linear-gradient(112deg,transparent 0 28%,#5fb8ff12 29%,transparent 31% 67%,#ff8b2a0c 68%,transparent 70%)}.main-menu-panel::after{content:"";position:absolute;left:-5%;right:-5%;bottom:0;height:27%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,#02050be8 45%),linear-gradient(90deg,#050812 0 5%,transparent 5% 10%,#050812 10% 15%,transparent 15% 22%,#050812 22% 29%,transparent 29% 34%,#050812 34% 41%,transparent 41% 47%,#050812 47% 54%,transparent 54% 61%,#050812 61% 67%,transparent 67% 73%,#050812 73% 81%,transparent 81% 88%,#050812 88% 94%,transparent 94%);clip-path:polygon(0 45%,5% 35%,8% 50%,12% 30%,16% 47%,20% 25%,25% 43%,29% 32%,34% 48%,38% 20%,43% 44%,47% 30%,52% 46%,57% 24%,62% 42%,67% 28%,72% 46%,77% 18%,82% 43%,87% 31%,92% 47%,96% 27%,100% 42%,100% 100%,0 100%);opacity:.75}.main-top{position:static;display:block}.main-title{position:absolute;left:50%;top:13.1%;transform:translateX(-50%);display:block;width:min(420px,46vw);max-height:105px;object-fit:contain;margin:0;image-rendering:auto;filter:drop-shadow(0 0 14px #2aa7ff55)}.menu-icon{display:block;width:76px;height:76px;object-fit:cover;margin:0 auto;image-rendering:auto;border:2px solid #243e76;box-shadow:0 8px 24px #000}.menu-corner{border:1px solid #40527a;background:#0b1220d9;color:#dce7ff;padding:8px 10px;font-weight:900;cursor:pointer;font-size:12px}.main-menu-panel>.main-top>#settings{position:absolute;left:6.5%;top:9.3%}.main-menu-panel>.main-top>#language{position:absolute;right:5%;top:11%}.settings-btn{width:52px;height:52px;border-radius:50%;font-size:25px;padding:0}.main-mid{display:block;margin:0}.main-menu-logo{position:absolute;left:50%;top:27.4%;transform:translateX(-50%);width:112px;height:112px;object-fit:cover;filter:drop-shadow(0 0 16px #167dff55)}.best-box{position:absolute;right:5%;top:27%;border:1px solid #344a77;background:#091326cc;color:#d9e4ff;padding:11px 12px;font-size:12px;font-weight:900}.menu-subtitle{position:absolute;left:50%;top:41.5%;transform:translateX(-50%);width:80%;color:#c3d0e7;line-height:1.45;margin:0;text-shadow:0 2px 5px #000;font-size:14px}.menu-buttons{position:absolute;left:50%;top:47.9%;transform:translateX(-50%);width:min(620px,78%);display:grid;grid-template-columns:1fr;gap:10px;margin:0}.menu-btn{border:2px solid #264e93;background:linear-gradient(180deg,#12336c,#0a1c40);color:#fff;padding:13px 12px;font-weight:900;cursor:pointer;font-size:16px;letter-spacing:1px;text-transform:uppercase;min-height:50px;box-shadow:0 4px 14px #0007}.menu-btn:hover:not(:disabled){filter:brightness(1.18);transform:translateY(-1px)}.menu-btn:disabled{opacity:.45;cursor:not-allowed}.menu-btn.primary{border-color:#ff8a2a;background:linear-gradient(180deg,#f06a18,#b63d0d)}.menu-row{display:flex;justify-content:center;gap:10px;margin-top:14px}.small-btn{border:1px solid #40527a;background:#0b1220;color:#dce7ff;padding:7px 12px;font-weight:800;cursor:pointer;font-size:12px}.small-btn:hover{filter:brightness(1.15)}.hidden{display:none!important}.hint{font-size:12px;color:#aab8d0;margin-top:12px}.main-menu-panel>#menuHint{position:absolute;left:50%;top:69.5%;transform:translateX(-50%);margin:0;width:90%;text-shadow:0 2px 4px #000}.best{margin-top:10px;color:#d9e4ff;font-size:14px;font-weight:700}.gameover-panel{display:none}.gameover-panel.show{display:block}.chapter-panel{display:none}.chapter-panel.show{display:block;transform:none;padding:70px 28px 0;box-sizing:border-box}.chapter-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.chapter-title{font-size:25px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.back-btn{border:1px solid #40527a;background:#0b1220;color:#dce7ff;padding:8px 13px;font-weight:900;cursor:pointer}.chapter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.chapter-card{position:relative;min-height:132px;border:2px solid #304774;background:#09111f;overflow:hidden;color:#fff;cursor:pointer;text-align:left;padding:0}.chapter-card:hover:not(:disabled){filter:brightness(1.15);transform:translateY(-2px)}.chapter-card:disabled{cursor:not-allowed}.chapter-card-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:auto;opacity:.7}.chapter-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0003,#000c)}.chapter-card-content{position:relative;z-index:1;height:100%;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}.chapter-name{font-size:18px;font-weight:900;letter-spacing:1px}.chapter-desc{font-size:11px;color:#c9d4e8;margin-top:4px}.chapter-lock{position:absolute;z-index:2;right:9px;top:8px;font-size:22px;filter:drop-shadow(2px 2px #000)}.chapter-card.locked{opacity:.62}.chapter-card.coming{display:flex;align-items:center;justify-content:center;min-height:132px;color:#9aa7be;font-weight:900;letter-spacing:1px}.chapter-card.coming::after{background:#0008}.coming-text{position:relative;z-index:2}.menu-notice{position:absolute;left:50%;top:72%;transform:translateX(-50%);margin:0;color:#a6b3c8;font-size:12px;min-height:16px;width:90%}@media(max-width:650px){.chapter-panel.show{transform:none;padding:35px 16px 0;box-sizing:border-box}.panel{width:100vw;height:100vh;min-height:100vh;padding:0 16px}.main-title{width:min(340px,62vw);top:12%}.main-menu-panel>.main-top>#settings{left:5%;top:7%}.main-menu-panel>.main-top>#language{right:5%;top:8%}.main-menu-logo{width:74px;height:74px;top:25%}.best-box{right:5%;top:25%;font-size:10px;padding:8px}.menu-subtitle{top:39%;font-size:12px;width:86%}.menu-buttons{top:46%;width:86%;gap:8px}.menu-btn{min-height:46px;font-size:14px;padding:11px}.main-menu-panel>#menuHint{top:68%;font-size:11px}.menu-notice{top:71%}.chapter-grid{grid-template-columns:repeat(2,1fr)}}.gameover-panel .menu-logo{display:none}.boss-ui{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:min(520px,62vw);display:none;z-index:5;text-align:center;pointer-events:none}.boss-ui.active{display:block}.boss-name{font-family:monospace;font-weight:900;font-size:18px;letter-spacing:2px;text-transform:uppercase;text-shadow:2px 2px 0 #000;margin-bottom:5px}.boss-bar{height:18px;border:3px solid #15161b;background:#08090d;box-shadow:0 0 0 2px #000,0 3px 0 #000;image-rendering:pixelated}.boss-fill{height:100%;width:100%;background:linear-gradient(180deg,#ff5a5a 0 45%,#b71924 46% 100%);transition:width .12s linear}
+
+/* V9 PIXEL MENU OVERRIDES */
+html,body{background:#030712}
+#overlay{background:linear-gradient(180deg,#020817d9,#020712ef),url("assets/bg_night.jpg") center/cover no-repeat}
+#overlay:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.75;background:
+radial-gradient(circle at 17% 25%,#55c8ff22 0 2px,transparent 3px),
+radial-gradient(circle at 82% 31%,#8d72ff20 0 2px,transparent 3px),
+radial-gradient(circle at 72% 72%,#32a8ff18 0 2px,transparent 3px),
+linear-gradient(115deg,transparent 0 22%,#188cff13 22.5% 23%,transparent 23.5% 100%)}
+.panel{width:100vw;max-width:none;height:100vh;min-height:100vh;padding:0 5vw;border:2px solid #2377d8;background:
+linear-gradient(180deg,#06142bd0,#030814e8),url("assets/bg_night.jpg") center/cover no-repeat;
+box-shadow:inset 0 0 0 2px #071a38,inset 0 0 55px #008cff24}
+.main-menu-panel{justify-content:initial}
+.main-menu-panel::before{background:
+radial-gradient(circle at 50% 9%,#8fe7ff18 0 4%,transparent 15%),
+radial-gradient(circle at 12% 33%,#087cff1c 0 7%,transparent 19%),
+radial-gradient(circle at 88% 57%,#ff8a2a10 0 7%,transparent 20%),
+repeating-linear-gradient(90deg,transparent 0 13%,#3f8cff08 13.2% 13.5%,transparent 13.7% 100%)}
+.main-menu-panel::after{height:35%;opacity:.95}
+.main-top,.main-mid{position:static}
+.main-title{top:13.1%;width:min(430px,48vw);max-height:125px;filter:drop-shadow(0 0 10px #31a8ff70);image-rendering:pixelated}
+.main-menu-logo{top:27.4%;width:128px;height:128px;border:0;box-shadow:none;filter:drop-shadow(0 0 10px #2a9fff88);image-rendering:pixelated}
+.menu-corner,.best-box,.menu-btn{
+font-family:monospace,ui-monospace,SFMono-Regular,Menlo,Consolas,sans-serif;
+text-shadow:2px 2px 0 #061020}
+.menu-corner{border:2px solid #3aa4ff;background:#07152ce8;box-shadow:4px 4px 0 #020711,0 0 12px #178fff33;image-rendering:pixelated}
+.main-menu-panel>.main-top>#settings{left:6.5%;top:9.3%}
+.main-menu-panel>.main-top>#language{right:5%;top:9.4%}
+.settings-btn{width:58px;height:58px;border-radius:0;font-size:25px}
+.main-menu-panel>.main-top>#controller{
+position:absolute;left:6.5%;top:19.3%;
+}
+.controller-btn{width:58px;height:58px;border-radius:0;font-size:26px;padding:0}
+.best-box{right:5%;top:20.6%;border:2px solid #328ff0;background:#07152ce8;padding:11px 14px;font-size:14px;box-shadow:4px 4px 0 #020711}
+.menu-subtitle,#menuHint{display:none!important}
+.menu-buttons{top:47.9%;width:min(700px,78%);gap:24px}
+.menu-btn{
+position:relative;border:0;padding:15px 18px;min-height:64px;font-size:21px;letter-spacing:2px;
+background:#086fe0;box-shadow:
+0 0 0 2px #57c7ff,
+0 0 0 5px #0b4e9f,
+7px 7px 0 #020814,
+0 0 20px #0788ff45;
+clip-path:polygon(0 14%,3% 14%,3% 0,97% 0,97% 14%,100% 14%,100% 86%,97% 86%,97% 100%,3% 100%,3% 86%,0 86%);
+}
+.menu-btn::before{content:"";position:absolute;inset:6px;pointer-events:none;border:1px solid #8bdcff55;clip-path:polygon(0 12%,3% 12%,3% 0,97% 0,97% 12%,100% 12%,100% 88%,97% 88%,97% 100%,3% 100%,3% 88%,0 88%)}
+.menu-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.15)}
+.menu-btn.primary{background:#ef7115;box-shadow:0 0 0 2px #ffc04a,0 0 0 5px #a93c08,7px 7px 0 #020814,0 0 20px #ff861f55}
+#store{background:#5220b8;box-shadow:0 0 0 2px #d28cff,0 0 0 5px #45119b,7px 7px 0 #020814,0 0 20px #8a36ff44}
+#store::after{content:"";position:absolute;right:12px;top:10px;width:6px;height:6px;background:#f4b9ff;box-shadow:-10px 8px #f4b9ff,8px 17px #f4b9ff}
+.menu-notice{top:73%;font-family:monospace}
+.pixel-decor{position:absolute;pointer-events:none;z-index:0;image-rendering:pixelated}
+.pixel-moon{left:15%;top:17%;width:88px;height:88px;border-radius:50%;background:#b9eaff;box-shadow:0 0 18px #83d9ff55;clip-path:polygon(35% 0,58% 0,42% 12%,31% 27%,27% 43%,30% 58%,40% 73%,57% 87%,75% 96%,56% 100%,37% 94%,20% 82%,8% 64%,2% 45%,7% 26%,19% 10%)}
+.pixel-ribbon{right:10%;top:37%;width:80px;height:230px;border:8px solid #168bff;filter:drop-shadow(0 0 8px #168bff);clip-path:polygon(50% 0,100% 10%,72% 28%,100% 45%,67% 60%,92% 76%,55% 100%,32% 87%,58% 68%,28% 52%,61% 34%,30% 18%)}
+.pixel-ribbon.left{left:8%;right:auto;top:57%;transform:scale(.7) rotate(8deg)}
+.pixel-city{position:absolute;left:0;right:0;bottom:0;height:28%;pointer-events:none;opacity:.7;background:
+linear-gradient(90deg,#020712 0 7%,transparent 7% 11%,#030914 11% 16%,transparent 16% 21%,#020712 21% 27%,transparent 27% 32%,#020712 32% 40%,transparent 40% 45%,#030914 45% 53%,transparent 53% 59%,#020712 59% 66%,transparent 66% 72%,#030914 72% 79%,transparent 79% 84%,#020712 84% 92%,transparent 92%),
+repeating-linear-gradient(0deg,transparent 0 18px,#4bb7ff16 18px 20px)}
+.pixel-city:after{content:"";position:absolute;inset:15% 0 0;background:repeating-linear-gradient(90deg,transparent 0 28px,#ffcc6417 28px 31px,transparent 31px 65px)}
+@media(max-width:650px){
+ .panel{padding:0 4vw}
+ .main-title{top:10%;width:min(360px,70vw);max-height:100px}
+ .main-menu-logo{top:24%;width:92px;height:92px}
+ .main-menu-panel>.main-top>#settings{left:5%;top:6%}
+ .main-menu-panel>.main-top>#controller{left:5%;top:15.5%}
+ .main-menu-panel>.main-top>#language{right:5%;top:6.5%}
+ .best-box{right:5%;top:17.5%;font-size:11px;padding:8px 10px}
+ .menu-buttons{top:45%;width:88%;gap:20px}
+ .menu-btn{min-height:58px;font-size:16px;padding:14px 10px}
+ .pixel-moon{left:12%;top:18%;width:60px;height:60px}
+ .pixel-ribbon{right:5%;top:40%;transform:scale(.65)}
+ .pixel-ribbon.left{left:3%;top:62%}
+}
+
+.controls-modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:#02050bd9;padding:20px}
+.controls-card{position:relative;width:min(620px,92vw);padding:34px 28px 28px;background:#07152b;border:3px solid #43aaff;box-shadow:8px 8px 0 #020711,0 0 35px #0788ff44;font-family:monospace;image-rendering:pixelated}
+.controls-title{text-align:center;font-size:28px;font-weight:900;letter-spacing:3px;margin-bottom:24px;text-shadow:3px 3px 0 #000}
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.control-section{padding:18px;border:2px solid #285d9e;background:#040c1bd9;line-height:2;font-size:13px}
+.control-heading{color:#69c8ff;font-size:16px;font-weight:900;margin-bottom:7px}
+.controls-close{position:absolute;right:8px;top:5px;border:0;background:transparent;color:#fff;font:900 30px monospace;cursor:pointer}
+@media(max-width:650px){.controls-grid{grid-template-columns:1fr}.controls-card{padding:30px 18px 20px}.control-section{font-size:12px}}
+
+/* V10 PIXEL POLISH */
+.main-menu-panel::before{
+  background:
+    radial-gradient(circle at 18% 19%,#9edfff22 0 2px,transparent 3px),
+    radial-gradient(circle at 83% 24%,#9d7cff20 0 2px,transparent 3px),
+    radial-gradient(circle at 74% 68%,#35aaff18 0 2px,transparent 3px),
+    radial-gradient(circle at 27% 72%,#ffffff16 0 1px,transparent 2px),
+    repeating-linear-gradient(90deg,transparent 0 9%,#5baaff07 9.2% 9.4%,transparent 9.6% 100%);
+}
+.main-menu-panel::after{
+  height:38%;
+  opacity:1;
+  background:
+    linear-gradient(180deg,transparent 0 15%,#02050be8 65%),
+    repeating-linear-gradient(90deg,transparent 0 34px,#4bb7ff08 35px 36px,transparent 37px 74px);
+  clip-path:polygon(0 42%,4% 36%,7% 46%,11% 30%,15% 43%,20% 25%,25% 42%,29% 31%,34% 45%,39% 22%,44% 40%,49% 28%,54% 43%,59% 25%,64% 41%,69% 29%,74% 44%,79% 20%,84% 40%,89% 27%,94% 43%,100% 32%,100% 100%,0 100%);
+}
+/* Floating pixel-style controls: no square boxes */
+.menu-corner{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+  color:#e8f5ff;
+  text-shadow:3px 3px 0 #07101f,0 0 12px #2ca7ff88;
+  font-family:monospace;
+}
+.settings-btn,.controller-btn{
+  width:auto!important;height:auto!important;
+  border-radius:0!important;
+  font-size:34px!important;
+  line-height:1;
+  image-rendering:pixelated;
+  filter:drop-shadow(0 0 5px #39aaff88);
+}
+.main-menu-panel>.main-top>#settings{left:6.5%;top:8.5%}
+.main-menu-panel>.main-top>#controller{left:6.7%;top:17.5%}
+.main-menu-panel>.main-top>#language{
+  right:5%;top:8.2%;
+  font-size:14px!important;
+  letter-spacing:1px;
+  font-weight:900;
+}
+.best-box{
+  right:5%;top:19.8%;
+  border:0!important;background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+  font-size:14px;
+  color:#e8f5ff;
+  text-shadow:3px 3px 0 #07101f,0 0 12px #2ca7ff66;
+}
+/* richer side decorations, replacing the moon/ribbons */
+.pixel-spirit{
+  position:absolute;z-index:0;pointer-events:none;image-rendering:pixelated;
+  width:92px;height:170px;opacity:.9;
+  background:
+    linear-gradient(90deg,transparent 0 38%,#38b9ff 38% 52%,transparent 52%),
+    linear-gradient(90deg,transparent 0 25%,#8e7cff 25% 40%,transparent 40% 68%,#38b9ff 68% 82%,transparent 82%);
+  clip-path:polygon(44% 0,61% 8%,54% 19%,75% 30%,59% 39%,78% 51%,55% 62%,70% 74%,48% 100%,35% 84%,47% 69%,27% 57%,43% 46%,23% 34%,41% 22%,31% 11%);
+  filter:drop-shadow(0 0 8px #168bff);
+}
+.pixel-spirit.right{right:6%;top:37%;transform:scale(1.05)}
+.pixel-spirit.left{left:6%;top:48%;transform:scale(.72) rotate(-8deg);opacity:.72}
+.pixel-stars{
+  position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.8;
+  background:
+    radial-gradient(circle at 7% 39%,#bdeaff 0 2px,transparent 3px),
+    radial-gradient(circle at 92% 39%,#bdeaff 0 2px,transparent 3px),
+    radial-gradient(circle at 14% 66%,#6fbfff 0 2px,transparent 3px),
+    radial-gradient(circle at 86% 70%,#a780ff 0 2px,transparent 3px),
+    radial-gradient(circle at 23% 31%,#ffffff 0 1px,transparent 2px),
+    radial-gradient(circle at 78% 30%,#ffffff 0 1px,transparent 2px);
+}
+/* pixel icons inside the main options */
+.menu-btn{display:flex;align-items:center;justify-content:center;gap:14px}
+.menu-emoji{
+  font-family:"Segoe UI Symbol","Noto Sans Symbols 2",monospace;
+  font-size:25px;
+  line-height:1;
+  filter:drop-shadow(2px 2px 0 #061020);
+  image-rendering:pixelated;
+}
+.menu-label{font-family:monospace,ui-monospace,SFMono-Regular,Menlo,Consolas,sans-serif;font-weight:900}
+#store::after{display:none}
+/* keep the top logo slightly higher */
+.main-title{top:11.7%}
+/* Arabic title/icon are explicitly swapped by JS */
+#menuLogo,#menuIcon{background:transparent!important;mix-blend-mode:normal}
+@media(max-width:650px){
+  .main-title{top:9.3%}
+  .main-menu-panel>.main-top>#settings{left:5%;top:5.5%}
+  .main-menu-panel>.main-top>#controller{left:5.2%;top:14.5%}
+  .main-menu-panel>.main-top>#language{right:5%;top:5.8%;font-size:12px!important}
+  .best-box{right:5%;top:17%;font-size:11px}
+  .settings-btn,.controller-btn{font-size:30px!important}
+  .pixel-spirit.right{right:2%;top:39%;transform:scale(.72)}
+  .pixel-spirit.left{left:2%;top:53%;transform:scale(.52)}
+  .menu-btn{gap:10px}
+  .menu-emoji{font-size:21px}
+}
+
+
+/* V11 REFERENCE POLISH — story chapters, Press Start 2P, Bleach-inspired scene dressing */
+:root{--pixel-font:'Press Start 2P','Noto Sans Mono','Courier New',monospace}
+html,body,#game,.panel,.menu-btn,.menu-corner,.best-box,.chapter-title,.chapter-name,.chapter-desc,.back-btn,.controls-card,.controls-title,.control-section,.control-heading,.controls-close,.menu-label{font-family:var(--pixel-font)}
+html[lang="ar"] body,html[lang="ar"] .panel,html[lang="ar"] .menu-btn,html[lang="ar"] .menu-corner,html[lang="ar"] .best-box,html[lang="ar"] .chapter-title,html[lang="ar"] .chapter-name,html[lang="ar"] .chapter-desc,html[lang="ar"] .back-btn,html[lang="ar"] .controls-card{font-family:'Noto Kufi Arabic','Noto Sans Arabic',var(--pixel-font)}
+.main-menu-panel::before{background:
+ radial-gradient(circle at 7% 14%,#ffffff 0 1px,transparent 2px),
+ radial-gradient(circle at 14% 27%,#79d9ff 0 2px,transparent 3px),
+ radial-gradient(circle at 23% 12%,#ffffff 0 1px,transparent 2px),
+ radial-gradient(circle at 32% 24%,#b5eaff 0 1px,transparent 2px),
+ radial-gradient(circle at 67% 16%,#ffffff 0 1px,transparent 2px),
+ radial-gradient(circle at 77% 27%,#79d9ff 0 2px,transparent 3px),
+ radial-gradient(circle at 91% 15%,#ffffff 0 1px,transparent 2px),
+ radial-gradient(circle at 88% 35%,#b88cff 0 2px,transparent 3px),
+ linear-gradient(118deg,transparent 0 35%,#25a7ff0d 36%,transparent 38% 100%);
+ opacity:1}
+/* remove the old moon/ribbon concepts completely */
+.pixel-moon,.pixel-ribbon,.pixel-spirit{display:none!important}
+/* left/right Bleach-inspired silhouettes: zanpakuto + hollow mask */
+.pixel-katana{left:5.5%;bottom:14%;width:92px;height:230px;transform:rotate(-10deg);opacity:.82;filter:drop-shadow(0 0 8px #168bff)}
+.pixel-katana::before{content:"";position:absolute;left:40px;top:5px;width:10px;height:155px;background:linear-gradient(90deg,#9fe8ff,#fff,#58aaff);clip-path:polygon(30% 0,70% 0,100% 85%,50% 100%,0 85%)}
+.pixel-katana::after{content:"";position:absolute;left:22px;top:148px;width:48px;height:16px;background:#161a2b;box-shadow:0 0 0 4px #6cc8ff,0 22px 0 -2px #1a1324,0 26px 0 -2px #ff7b22;clip-path:polygon(0 35%,25% 35%,30% 0,70% 0,75% 35%,100% 35%,100% 70%,75% 70%,70% 100%,30% 100%,25% 70%,0 70%)}
+.pixel-mask{right:4.5%;top:34%;width:150px;height:185px;opacity:.19;filter:drop-shadow(0 0 10px #287dff)}
+.pixel-mask::before{content:"";position:absolute;inset:0;background:#0a1b4d;clip-path:polygon(50% 0,74% 7%,88% 25%,100% 54%,88% 82%,67% 100%,50% 87%,33% 100%,12% 82%,0 54%,12% 25%,26% 7%)}
+.pixel-mask::after{content:"";position:absolute;left:25px;right:25px;top:45px;height:82px;background:linear-gradient(90deg,transparent 0 22%,#58bfff 22% 31%,transparent 31% 69%,#58bfff 69% 78%,transparent 78%),linear-gradient(180deg,transparent 0 28%,#071127 29% 37%,transparent 38% 62%,#071127 63% 70%,transparent 71%);clip-path:polygon(0 0,40% 9%,50% 0,60% 9%,100% 0,87% 100%,66% 78%,50% 100%,34% 78%,13% 100%)}
+.pixel-wisp{width:76px;height:150px;opacity:.7;filter:drop-shadow(0 0 9px #25a8ff);background:linear-gradient(90deg,transparent 0 38%,#3bc0ff 38% 55%,transparent 55%),linear-gradient(135deg,transparent 0 40%,#9b7cff 41% 49%,transparent 50%);clip-path:polygon(48% 0,65% 13%,53% 25%,78% 39%,57% 51%,74% 65%,53% 77%,63% 100%,40% 84%,48% 70%,25% 58%,43% 45%,22% 33%,41% 20%,33% 8%)}
+.wisp-left{left:10%;top:38%;transform:scale(.72) rotate(7deg)}
+.wisp-right{right:10%;top:30%;transform:scale(.92) rotate(-5deg)}
+.pixel-petals{position:absolute;inset:0;pointer-events:none;z-index:1;background:
+ radial-gradient(ellipse at 18% 38%,#ff9bdc 0 4px,transparent 5px),
+ radial-gradient(ellipse at 27% 54%,#ffb6e6 0 3px,transparent 4px),
+ radial-gradient(ellipse at 74% 38%,#ff9bdc 0 4px,transparent 5px),
+ radial-gradient(ellipse at 83% 55%,#ffb6e6 0 3px,transparent 4px),
+ radial-gradient(ellipse at 64% 48%,#ff9bdc 0 3px,transparent 4px),
+ radial-gradient(ellipse at 35% 65%,#ffb6e6 0 3px,transparent 4px);opacity:.75}
+.pixel-city{z-index:0;opacity:.82;height:32%;background:
+ linear-gradient(90deg,#020712 0 7%,transparent 7% 10%,#030914 10% 17%,transparent 17% 21%,#020712 21% 28%,transparent 28% 33%,#020712 33% 41%,transparent 41% 46%,#030914 46% 55%,transparent 55% 60%,#020712 60% 67%,transparent 67% 72%,#030914 72% 80%,transparent 80% 85%,#020712 85% 93%,transparent 93%),
+ repeating-linear-gradient(0deg,transparent 0 18px,#4bb7ff14 18px 20px)}
+/* Keep the menu typography crisp and close to the reference grid */
+.menu-btn{font-family:var(--pixel-font)!important;font-weight:400!important;font-size:18px;letter-spacing:1px;text-shadow:3px 3px 0 #071020;gap:18px}
+.menu-label{font-family:var(--pixel-font)!important}
+.menu-emoji{order:2;font-size:23px;line-height:1;filter:drop-shadow(2px 2px 0 #071020)}
+.menu-btn .menu-label{order:1}
+.main-menu-panel>.main-top>#settings{top:8.3%}
+.main-menu-panel>.main-top>#controller{top:17.2%}
+.main-menu-panel>.main-top>#language{top:8.0%}
+.best-box{top:19.5%;font-family:var(--pixel-font)!important;font-size:12px}
+.main-title{top:10.8%}
+.main-menu-logo{top:26.4%}
+.menu-buttons{top:46.5%;gap:23px;width:min(720px,78%)}
+.menu-btn.primary{background:linear-gradient(180deg,#ff8a19,#dc4b0d)}
+#store{background:linear-gradient(180deg,#7028d7,#4b1ca9)}
+@media(max-width:650px){
+ .main-title{top:8.8%}
+ .main-menu-logo{top:23.5%;width:92px;height:92px}
+ .main-menu-panel>.main-top>#settings{top:5.3%}
+ .main-menu-panel>.main-top>#controller{top:14.3%}
+ .main-menu-panel>.main-top>#language{top:5.6%}
+ .best-box{top:16.7%}
+ .menu-buttons{top:44.5%;gap:18px;width:88%}
+ .menu-btn{font-size:14px;min-height:58px;gap:10px}
+ .menu-emoji{font-size:19px}
+ .pixel-katana{left:1%;bottom:12%;transform:scale(.65) rotate(-10deg)}
+ .pixel-mask{right:-1%;top:34%;transform:scale(.65)}
+ .wisp-left{left:3%;top:38%;transform:scale(.48)}
+ .wisp-right{right:3%;top:34%;transform:scale(.55)}
+}
+
+
+/* V11 SAFE CLEANUP — preserve stable menu, remove unwanted bottom shadow/energy/mask, use reference pixel icons */
+.main-menu-panel::after{display:none!important;background:none!important;height:0!important;opacity:0!important}
+.pixel-city,.pixel-katana,.pixel-mask,.pixel-wisp{display:none!important}
+.main-menu-panel{background:linear-gradient(180deg,#06142bd0,#030814e8),url("assets/bg_night.jpg") center/cover no-repeat!important}
+.menu-corner{display:flex;align-items:center;justify-content:center;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.settings-btn img{width:58px;height:55px;object-fit:contain;image-rendering:pixelated;display:block}
+.controller-btn img{width:68px;height:64px;object-fit:contain;image-rendering:pixelated;display:block}
+.language-btn{gap:4px;flex-direction:row-reverse}
+.language-btn img{width:38px;height:32px;object-fit:contain;image-rendering:pixelated;display:block}
+.language-btn span{font-family:var(--pixel-font);font-size:13px;letter-spacing:0}
+.best-box{display:flex;align-items:center;gap:5px;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+.best-box img{width:34px;height:34px;object-fit:contain;image-rendering:pixelated;display:block}
+.best-box .best-text{font-family:var(--pixel-font);font-size:11px;white-space:nowrap}
+.menu-emoji{order:2;width:46px;height:46px;object-fit:contain;image-rendering:pixelated;filter:none!important;display:block}
+.menu-btn .menu-label{order:1}
+@media(max-width:650px){
+ .settings-btn img{width:38px;height:36px}
+ .controller-btn img{width:46px;height:43px}
+ .language-btn img{width:29px;height:25px}
+ .language-btn span{font-size:10px}
+ .best-box img{width:25px;height:25px}
+ .best-box .best-text{font-size:9px}
+ .menu-emoji{width:34px;height:34px}
+}
+
+
+/* ARAPIX ARABIC PIXEL FONT — Arabic UI only */
+@font-face{
+  font-family:"Arapix";
+  src:url("assets/fonts/Arapix.otf") format("opentype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+html[lang="ar"] body,
+html[lang="ar"] .panel,
+html[lang="ar"] .menu-btn,
+html[lang="ar"] .menu-corner,
+html[lang="ar"] .best-box,
+html[lang="ar"] .chapter-title,
+html[lang="ar"] .chapter-name,
+html[lang="ar"] .chapter-desc,
+html[lang="ar"] .back-btn,
+html[lang="ar"] .controls-card,
+html[lang="ar"] .controls-title,
+html[lang="ar"] .control-section,
+html[lang="ar"] .control-heading,
+html[lang="ar"] .menu-label,
+html[lang="ar"] .menu-notice,
+html[lang="ar"] .hint,
+html[lang="ar"] .menu-subtitle{
+  font-family:"Arapix",monospace!important;
+  font-weight:400!important;
+}
+html[lang="ar"] .menu-btn,
+html[lang="ar"] .best-box,
+html[lang="ar"] .chapter-title,
+html[lang="ar"] .chapter-name,
+html[lang="ar"] .chapter-desc,
+html[lang="ar"] .back-btn,
+html[lang="ar"] .controls-title,
+html[lang="ar"] .control-heading{
+  letter-spacing:0!important;
+}
+/* Match the visual size of the English pixel UI. Arapix has smaller glyph metrics,
+   so its CSS size is increased without changing the English layout. */
+html[lang="ar"] .menu-btn .menu-label{
+  font-size:24px!important;
+  line-height:1.05!important;
+}
+html[lang="ar"] .best-box .best-text{
+  font-size:12px!important;
+}
+@media(max-width:650px){
+  html[lang="ar"] .menu-btn .menu-label{
+    font-size:20px!important;
+  }
+}
+
+/* CHARACTER SELECT — isolated viewport so characters can never affect menu layout */
+.character-display{position:absolute;right:4.5%;top:28.8%;width:150px;height:155px;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;pointer-events:auto;overflow:visible;cursor:pointer}
+.character-display-frame{position:relative;width:132px;height:125px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;pointer-events:none}
+.character-display-frame img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 9px #168bff66)}
+.character-display-name{margin-top:2px;color:#dce9ff;font-family:var(--pixel-font);font-size:10px;line-height:1.2;text-shadow:2px 2px 0 #071020;white-space:nowrap}
+.character-select-btn{display:none;position:absolute;right:4.5%;top:41.8%;z-index:6;border:2px solid #3aa4ff;background:#07152ce8;color:#fff;box-shadow:4px 4px 0 #020711,0 0 12px #178fff33;padding:6px 9px;font-family:var(--pixel-font);font-size:9px;cursor:pointer;min-width:118px}
+.character-select-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.character-modal{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:#02050bd9;padding:20px}
+.character-modal.show{display:flex}
+.character-card-panel{position:relative;width:min(720px,92%);max-height:82%;overflow:auto;border:2px solid #3aa4ff;background:linear-gradient(180deg,#07152cf5,#030814f7);box-shadow:0 0 0 4px #020711,0 0 30px #168bff44;padding:24px}
+.character-card-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}
+.character-card-title{font-family:var(--pixel-font);font-size:18px;color:#fff;text-shadow:3px 3px 0 #071020}
+.character-close{border:2px solid #40527a;background:#0b1220;color:#fff;font-family:var(--pixel-font);font-size:18px;width:38px;height:38px;cursor:pointer}
+.character-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.character-option{position:relative;min-height:190px;border:2px solid #294c86;background:#081329;color:#fff;cursor:pointer;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;overflow:hidden}
+.character-option:hover{filter:brightness(1.16);transform:translateY(-2px)}
+.character-option.selected{border-color:#ff9b2e;box-shadow:0 0 0 2px #ffcf62,0 0 16px #ff8a2f55}
+.character-option img{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:105px;height:145px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 7px #168bff55)}
+.character-option-name{position:relative;z-index:1;font-family:var(--pixel-font);font-size:10px;text-shadow:2px 2px 0 #071020}
+.character-option.locked{opacity:.45;cursor:default}
+.character-option.locked img{filter:grayscale(1);opacity:.45}
+.character-option.locked:hover{filter:none;transform:none}
+.character-option.locked .character-option-name::after{content:' — SOON';color:#9aa7be}
+html[lang="ar"] .character-card-title,html[lang="ar"] .character-option-name,html[lang="ar"] .character-select-btn,html[lang="ar"] .character-close,html[lang="ar"] .character-display-name{font-family:"Arapix",monospace!important;letter-spacing:0!important}
+html[lang="ar"] .character-select-btn{font-size:13px}
+@media(max-width:650px){
+ .character-display{right:2.5%;top:27.8%;width:96px;height:108px}
+ .character-display-frame{width:86px;height:82px}
+ .character-display-name{font-size:7px}
+ .character-select-btn{right:2.5%;top:39.7%;font-size:7px;min-width:82px;padding:5px 6px}
+ .character-card-panel{padding:15px;width:94%}
+ .character-card-title{font-size:12px}
+ .character-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+ .character-option{min-height:150px}
+ .character-option img{width:78px;height:112px}
+ .character-option-name{font-size:8px}
+ html[lang="ar"] .character-select-btn{font-size:10px}
+}
+
+/* Larger left-side character viewport, isolated from menu layout */
+.character-display{left:4.2%;right:auto;top:36%;width:205px;height:215px;z-index:7}
+.character-display-frame{width:190px;height:185px}
+.character-display-frame img{max-width:100%;max-height:100%;filter:drop-shadow(0 0 12px #168bff70)}
+.character-display-name{font-size:13px;margin-top:4px}
+@media(max-width:650px){.character-display{left:2.5%;right:auto;top:33%;width:125px;height:140px}.character-display-frame{width:118px;height:115px}.character-display-name{font-size:8px}}
+/* Post-run result screens */
+.result-panel{display:none;position:fixed;inset:0;z-index:50;overflow:hidden;isolation:isolate;width:100vw;max-width:none;height:100vh;min-height:100vh;padding:42px 34px;align-items:center;justify-content:center;text-align:center;border:3px solid #315d9e;background:linear-gradient(180deg,#061329f2,#020711f7),url("assets/bg_night.jpg") center/cover no-repeat;box-shadow:0 0 0 4px #020711,0 0 45px #0788ff33}
+.result-panel.show{display:flex}.result-panel::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 50% 30%,#5aaeff18,transparent 38%),radial-gradient(circle at 20% 80%,#ffffff0b,transparent 28%)}
+.result-panel.loss{border-color:#455064;box-shadow:0 0 0 4px #11151e,0 0 35px #0009}.result-panel.loss::before{background:linear-gradient(180deg,#0008,#0b101c99),radial-gradient(circle at 50% 35%,#8090a010,transparent 42%)}
+.result-panel.win{border-color:#ffb52e;box-shadow:0 0 0 4px #4d2505,0 0 55px #ff9b2e55}.result-panel.win::before{background:radial-gradient(circle at 50% 38%,#ffd45b33,transparent 38%),radial-gradient(circle at 15% 30%,#45bfff20,transparent 25%),radial-gradient(circle at 85% 70%,#ff6b1f20,transparent 25%)}
+.result-inner{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px}.result-title{font-family:var(--pixel-font);font-size:38px;line-height:1.05;letter-spacing:2px;text-transform:uppercase;text-shadow:4px 4px 0 #000;margin:0}.result-panel.loss .result-title{color:#b8c1cf;text-shadow:4px 4px 0 #11151e}.result-panel.win .result-title{color:#ffd65a;font-size:46px;text-shadow:4px 4px 0 #7a2e00,0 0 18px #ffb52e88}.result-subtitle{font-family:var(--pixel-font);font-size:13px;color:#aebbd0;min-height:18px}.result-panel.win .result-subtitle{color:#ffe7a0}
+.result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(500px,90%);margin:4px 0 8px}.result-panel.win .result-stats{grid-template-columns:1fr;width:min(300px,90%)}.result-stat{border:2px solid #304774;background:#050d1ce6;padding:16px 12px;box-shadow:4px 4px 0 #020711}.result-panel.loss .result-stat{border-color:#3d4655;background:#090d15e8}.result-panel.win .result-stat{border-color:#d98b20;background:#201507e8}.result-stat-label{font-family:var(--pixel-font);font-size:11px;color:#9baac0;margin-bottom:8px}.result-stat-value{font-family:var(--pixel-font);font-size:25px;color:#fff;text-shadow:3px 3px 0 #000}.result-panel.win .result-stat-value{color:#ffd65a;font-size:30px}
+.result-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:4px}.result-btn{min-width:190px;border:2px solid #3aa4ff;background:#0a63c9;color:#fff;padding:13px 18px;font-family:var(--pixel-font);font-size:14px;cursor:pointer;box-shadow:5px 5px 0 #020711;text-shadow:2px 2px 0 #061020}.result-btn:hover{filter:brightness(1.18);transform:translateY(-2px)}.result-btn.secondary{background:#111b2e;border-color:#596a86}.result-panel.win .result-btn.primary{background:#e36a12;border-color:#ffc04a}
+html[lang="ar"] .result-title,html[lang="ar"] .result-subtitle,html[lang="ar"] .result-stat-label,html[lang="ar"] .result-stat-value,html[lang="ar"] .result-btn{font-family:"Arapix",monospace!important;letter-spacing:0!important}html[lang="ar"] .result-title{font-size:34px}html[lang="ar"] .result-panel.win .result-title{font-size:40px}
+@media(max-width:650px){.result-panel{width:100vw;height:100vh;min-height:100vh;padding:30px 16px}.result-title{font-size:28px}.result-panel.win .result-title{font-size:34px}.result-stats{width:96%;gap:8px}.result-stat{padding:12px 8px}.result-stat-value{font-size:20px}.result-panel.win .result-stat-value{font-size:24px}.result-btn{min-width:150px;font-size:11px;padding:11px 12px}}
+
+/* Souls currency system */
+.souls-box{position:absolute;right:5%;top:34.5%;display:flex;align-items:center;gap:8px;border:2px solid #287dff;background:#07152ce8;box-shadow:4px 4px 0 #020711,0 0 12px #178fff33;padding:7px 10px;color:#fff;font-family:var(--pixel-font);font-weight:900;min-width:118px;justify-content:center}
+.souls-box img{width:28px;height:28px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 6px #168bff99)}
+.souls-value{font-size:15px;letter-spacing:1px;text-shadow:2px 2px 0 #020711}
+.store-panel{display:none;position:relative;overflow:hidden;isolation:isolate;box-sizing:border-box;padding:70px 28px 30px;align-items:center;justify-content:flex-start}
+.store-panel.show{display:flex}
+.store-panel::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 24%,#168bff18,transparent 36%),linear-gradient(180deg,#050812b8,#050812ee),url("assets/bg_night.jpg") center/cover no-repeat}
+.store-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.store-title{font-size:26px;font-weight:900;letter-spacing:2px}
+.store-balance{display:flex;align-items:center;gap:8px;border:2px solid #287dff;background:#07152ce8;padding:8px 12px;box-shadow:4px 4px 0 #020711}
+.store-balance img{width:30px;height:30px;object-fit:contain;image-rendering:pixelated}
+.store-balance-value{font-size:17px;font-weight:900}
+.store-grid{width:min(760px,92%);display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.store-card{border:2px solid #304774;background:#09111fe8;min-height:150px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:5px 5px 0 #020711}
+.store-card img{width:58px;height:58px;object-fit:contain;image-rendering:pixelated;margin-bottom:8px}
+.store-card-title{font-size:16px;font-weight:900}.store-card-desc{font-size:11px;color:#9baac0;margin-top:7px}.store-coming{margin-top:14px;color:#7f8ba0;font-size:11px;font-weight:900}
+.revive-btn{background:#0b55a8;border-color:#5bb7ff}.revive-btn:disabled{display:none}
+.result-panel.loss .revive-btn{border-color:#168bff;background:#0a4385}
+.soul-popup{position:absolute;z-index:12;pointer-events:none;display:flex;align-items:center;gap:4px;font-family:var(--pixel-font);font-weight:900;font-size:13px;color:#dff7ff;text-shadow:2px 2px 0 #00142c,0 0 8px #168bff;white-space:nowrap;transform:translate(-50%,-50%)}
+@media(max-width:650px){.souls-box{right:5%;top:34%;min-width:92px;padding:5px 7px}.souls-box img{width:22px;height:22px}.souls-value{font-size:12px}.store-panel{padding:35px 16px 20px}.store-title{font-size:19px}.store-grid{grid-template-columns:1fr;gap:10px}.store-card{min-height:115px}.store-balance{padding:6px 9px}.store-balance img{width:24px;height:24px}.store-balance-value{font-size:13px}.soul-popup{font-size:10px}}
+html[lang="ar"] .souls-box,html[lang="ar"] .store-panel,html[lang="ar"] .store-title,html[lang="ar"] .store-balance,html[lang="ar"] .store-card,html[lang="ar"] .store-card-title,html[lang="ar"] .store-card-desc,html[lang="ar"] .revive-btn,html[lang="ar"] .soul-popup{font-family:"Arapix",monospace!important;letter-spacing:0!important}
+
+
+/* SETTINGS + MOBILE BUTTON CONTROLS + SOCIAL LINKS */
+/* Social badges live at the agreed lower-left position and stay side-by-side. */
+.social-links{position:absolute;left:4.5%;bottom:4.5%;z-index:8;display:flex;flex-direction:row;align-items:center;gap:9px;transform:none}
+.social-link{width:108px;height:106px;display:flex;align-items:center;justify-content:center;text-decoration:none;background:transparent;border:0;box-shadow:none;transition:.12s;box-sizing:border-box;overflow:visible}
+.social-link img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 4px 7px #0009)}
+.social-link:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.social-link.instagram,.social-link.tiktok{border:0;box-shadow:none}
+.settings-card{width:min(430px,88vw)}
+.settings-section{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.audio-settings{gap:12px}.audio-setting{border:2px solid #2f8fff;background:#07152c;padding:11px 12px;box-shadow:4px 4px 0 #020711}.audio-setting-head{display:flex;align-items:center;justify-content:space-between;color:#eaf6ff;font:900 13px var(--pixel-font,monospace);letter-spacing:1px}.audio-mute{border:1px solid #5278aa;background:#0b1d38;color:#dcecff;padding:5px 9px;font:900 9px var(--pixel-font,monospace);cursor:pointer}.audio-mute.active{border-color:#ffb52e;background:#3a2510;color:#ffd27a}.audio-slider{width:100%;margin:8px 0 2px;accent-color:#2f8fff;cursor:pointer}
+.control-mode-option{border:2px solid #2f8fff;background:#07152c;color:#eaf6ff;padding:14px 16px;text-align:left;cursor:pointer;font-family:var(--pixel-font,monospace);box-shadow:4px 4px 0 #020711}
+.control-mode-option span{display:block;font-size:15px}.control-mode-option small{display:block;margin-top:7px;color:#8fb5da;font:700 9px monospace}
+.control-mode-option.selected{border-color:#ffb52e;background:#182846;box-shadow:0 0 0 2px #ff7c17,4px 4px 0 #020711}
+.mobile-controls{position:absolute;inset:0;z-index:20;pointer-events:none}
+.mobile-controls.hidden{display:none!important}
+.mobile-control{position:absolute;pointer-events:auto;width:72px;height:72px;border:3px solid #8bdcff;background:#07152cd9;color:#fff;font-family:var(--pixel-font,monospace);font-size:25px;font-weight:900;box-shadow:4px 4px 0 #020711,0 0 18px #178fff55;touch-action:none;user-select:none;-webkit-user-select:none}
+.mobile-control:active{transform:translate(2px,2px);filter:brightness(1.25)}
+.jump-control{right:120px;bottom:28px}.attack-control{right:28px;bottom:28px;border-color:#ff8b49}.slide-control{left:28px;bottom:28px;border-color:#8bffce}
+@media(max-width:650px){.social-links{left:3.5%;bottom:3.5%;gap:6px}.social-link{width:78px;height:76px}.mobile-control{width:64px;height:64px;font-size:21px}.jump-control{right:105px;bottom:22px}.attack-control{right:22px;bottom:22px}.slide-control{left:22px;bottom:22px}}
+
+/* ONLINE ACCOUNTS + LEADERBOARD */
+.online-btn{position:absolute;z-index:9;background:#07152ce8;border:2px solid #287dff;color:#eaf6ff;font-family:var(--pixel-font);font-size:10px;font-weight:900;letter-spacing:.5px;padding:8px 10px;cursor:pointer;box-shadow:3px 3px 0 #020711,0 0 10px #168bff33;text-shadow:2px 2px 0 #020711}
+.online-btn:hover{filter:brightness(1.16);transform:translateY(-1px)}
+.icon-online-btn{width:94px;height:94px;padding:0;border:0;background:transparent;box-shadow:none;display:flex;align-items:center;justify-content:center;overflow:visible}
+.icon-online-btn img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 4px 7px #0009)}
+.icon-online-btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.account-online-btn{left:6.5%;top:27%}.leaderboard-online-btn{right:5%;top:27%}
+.online-card{width:min(470px,92vw);max-height:88vh;overflow:auto}
+.online-status{font-family:var(--pixel-font);font-size:10px;color:#75d9ff;margin:8px 0 14px;text-align:center}
+.online-input{display:block;width:100%;margin:9px 0;padding:12px 13px;border:2px solid #315d9e;background:#050b18;color:#fff;font-family:var(--pixel-font);font-size:11px;outline:none}
+.online-input:focus{border-color:#59c8ff;box-shadow:0 0 12px #168bff44}
+.online-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.online-hint{font-family:var(--pixel-font);font-size:8px;line-height:1.7;color:#aebbd2;margin-top:12px}
+.online-profile{font-family:var(--pixel-font);font-size:18px;text-align:center;color:#fff;text-shadow:2px 2px 0 #00142c;margin:15px 0}
+.online-profile-stats{display:flex;justify-content:center;gap:24px;font-family:var(--pixel-font);font-size:9px;color:#bcd8ff;margin-bottom:18px}.online-profile-stats b{color:#fff}
+.leaderboard-card{width:min(560px,94vw);max-height:90vh;overflow:hidden}
+.leaderboard-list{width:100%;max-height:55vh;overflow:auto;border:2px solid #20395f;background:#020711aa}
+.leaderboard-row{display:grid;grid-template-columns:48px 1fr 110px;gap:8px;align-items:center;padding:9px 10px;border-bottom:1px solid #1c3152;font-family:var(--pixel-font);font-size:9px;text-align:left}
+.leaderboard-row:last-child{border-bottom:0}.leaderboard-rank{text-align:center;color:#78cfff}.leaderboard-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.leaderboard-score{text-align:right;color:#fff}.leaderboard-row.me{background:#143761aa;border-left:3px solid #42c8ff}.leaderboard-empty{padding:25px 12px;font-family:var(--pixel-font);font-size:9px;color:#aebbd2;text-align:center}
+#leaderboardRefresh{margin-top:12px}
+@media(max-width:650px){
+  .icon-online-btn{width:68px;height:68px}.account-online-btn{left:5%;top:23%}.leaderboard-online-btn{right:5%;top:23%}
+  .online-card{padding:24px 18px}.leaderboard-card{padding:24px 14px}.leaderboard-row{grid-template-columns:38px 1fr 80px;font-size:8px;padding:8px 6px}
+}
+
+/* FINAL MENU SPACING POLISH — keep social buttons and menu layout untouched. */
+.character-display{top:41%;}
+.icon-online-btn{width:60px;height:60px;}
+.souls-box{top:39.5%;}
+@media(max-width:650px){
+  .character-display{top:38%;}
+  .icon-online-btn{width:58px;height:58px;}
+  .souls-box{top:38%;}
+}
+
+/* PIXEL UI PASS — account, leaderboard, store, chapters, souls, settings */
+:root{--px-bg:#050a14;--px-panel:#091426;--px-blue:#3aa7ff;--px-blue2:#164c8f;--px-white:#e9f5ff;--px-dim:#8da4bf;--px-shadow:#02050b}
+.panel,.controls-card,.online-card,.leaderboard-card,.settings-card,.store-panel,.chapter-panel{image-rendering:pixelated}
+.panel::after,.controls-card::after,.store-panel::after,.chapter-panel::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(0deg,transparent 0 3px,#79bfff05 3px 4px);mix-blend-mode:screen}
+/* chunky 8-bit corners without changing the existing layout */
+.controls-card,.online-card,.leaderboard-card,.settings-card{border:3px solid var(--px-blue)!important;border-radius:0!important;background:linear-gradient(180deg,#0b1930f5,#050b17f5)!important;box-shadow:6px 6px 0 var(--px-shadow),0 0 0 2px #0c2444,0 0 24px #168bff22!important;position:relative;isolation:isolate}
+.controls-card::before,.online-card::before,.leaderboard-card::before,.settings-card::before{content:"";position:absolute;inset:5px;border:1px solid #7ac9ff38;pointer-events:none;z-index:-1}
+.controls-title,.chapter-title,.store-title{font-family:var(--pixel-font)!important;text-shadow:3px 3px 0 #02050b;letter-spacing:2px!important}
+.controls-close{border:2px solid #49698f!important;border-radius:0!important;background:#0a1424!important;box-shadow:3px 3px 0 #02050b!important;font-family:var(--pixel-font)!important;font-size:18px!important}
+.controls-close:hover{background:#16335b!important;color:#fff!important;transform:translate(1px,1px)}
+/* Account */
+.online-status{border-top:2px solid #173b68;border-bottom:2px solid #173b68;padding:7px 0!important;letter-spacing:1px!important;color:#67caff!important;text-shadow:2px 2px 0 #02050b}
+.online-input{border:3px solid #244e7f!important;border-radius:0!important;background:#030914!important;box-shadow:inset 3px 3px 0 #02050b,3px 3px 0 #02050b!important;font-size:10px!important}
+.online-input:focus{border-color:#67caff!important;box-shadow:inset 3px 3px 0 #02050b,3px 3px 0 #02050b!important}
+.online-actions .result-btn,.online-card .result-btn{border-radius:0!important;box-shadow:5px 5px 0 #02050b!important;border-width:3px!important}
+.online-profile{border:2px solid #285b91;background:#061224;padding:13px 10px;margin:15px 0!important;box-shadow:4px 4px 0 #02050b;text-transform:uppercase}
+.online-profile-stats{border:2px solid #1c3d65;background:#040b16;padding:10px 8px;box-shadow:3px 3px 0 #02050b}
+/* Leaderboard */
+.leaderboard-list{border:3px solid #28527f!important;border-radius:0!important;background:#020711!important;box-shadow:4px 4px 0 #02050b!important}
+.leaderboard-row{min-height:34px;padding:7px 10px!important;border-bottom:2px solid #102944!important;background:linear-gradient(90deg,#061021,#08172a)!important;box-sizing:border-box}
+.leaderboard-row:nth-child(even){background:#071323!important}
+.leaderboard-row.me{background:#10365d!important;border-left:4px solid #58c8ff!important}
+.leaderboard-rank{font-size:11px!important;color:#68caff!important;text-shadow:2px 2px 0 #02050b}
+.leaderboard-name,.leaderboard-score{font-size:10px!important;text-shadow:2px 2px 0 #02050b}
+/* Settings */
+.settings-section{border:2px solid #17395f;padding:10px;background:#040b16;box-shadow:4px 4px 0 #02050b}
+.settings-section>.control-heading{color:#6ccfff!important;border-bottom:2px solid #1c4b77;padding-bottom:7px;margin-bottom:2px}
+.audio-setting{border:2px solid #28639a!important;border-radius:0!important;background:#071326!important;box-shadow:4px 4px 0 #02050b!important}
+.audio-mute{border:2px solid #456b91!important;border-radius:0!important;box-shadow:2px 2px 0 #02050b;font-size:8px!important}
+.audio-slider{height:8px;appearance:none;background:#061020;border:2px solid #244e7f;outline:none}
+.audio-slider::-webkit-slider-thumb{appearance:none;width:14px;height:14px;background:#54c5ff;border:2px solid #dff6ff;box-shadow:2px 2px 0 #02050b;border-radius:0}
+.audio-slider::-moz-range-thumb{width:12px;height:12px;background:#54c5ff;border:2px solid #dff6ff;box-shadow:2px 2px 0 #02050b;border-radius:0}
+.control-mode-option{border:3px solid #244e7f!important;border-radius:0!important;box-shadow:4px 4px 0 #02050b!important;background:#061122!important}
+.control-mode-option.selected{border-color:#ffb52e!important;box-shadow:0 0 0 2px #7a3c08,4px 4px 0 #02050b!important}
+/* Chapter select */
+.chapter-panel{background:linear-gradient(180deg,#050a14f2,#020711fa),url("assets/bg_night.jpg") center/cover no-repeat!important;border:3px solid #2e6da8!important;box-shadow:6px 6px 0 #02050b,0 0 0 2px #0a1b31,0 0 35px #168bff22!important}
+.chapter-header{border-bottom:3px solid #1b466f;padding-bottom:12px;margin-bottom:18px!important}
+.back-btn{border:3px solid #2d6497!important;border-radius:0!important;background:#071426!important;box-shadow:4px 4px 0 #02050b!important;font-family:var(--pixel-font)!important;text-transform:uppercase}
+.chapter-card{border:3px solid #2c5b87!important;border-radius:0!important;background:#061020!important;box-shadow:5px 5px 0 #02050b!important}
+.chapter-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,#fff0 0 7px,#72c8ff08 7px 8px);z-index:1;pointer-events:none}
+.chapter-card::after{background:linear-gradient(180deg,#0002 0 35%,#000d 100%)!important}
+.chapter-card:hover:not(:disabled){border-color:#68caff!important;filter:none!important;transform:translate(-1px,-1px)!important;box-shadow:6px 6px 0 #02050b,0 0 0 2px #143c63!important}
+.chapter-card.locked{filter:grayscale(.55);border-color:#37485c!important}
+.chapter-card.coming{border-style:dashed!important;background:#050b15!important}
+.chapter-name{font-size:16px!important;text-shadow:3px 3px 0 #02050b}
+.chapter-desc{font-size:9px!important}
+.chapter-lock{font-family:var(--pixel-font);font-size:16px!important}
+/* Store */
+.store-panel{border:3px solid #6b38b5!important;box-shadow:6px 6px 0 #02050b,0 0 0 2px #26104d,0 0 35px #8a36ff22!important}
+.store-panel::before{background:linear-gradient(180deg,#160b2fb0,#050812f2),url("assets/bg_night.jpg") center/cover no-repeat!important}
+.store-header{border-bottom:3px solid #542d8d;padding-bottom:12px}
+.store-title{text-shadow:3px 3px 0 #210c43!important}
+.store-balance{border:3px solid #7b4bd0!important;background:#100a20!important;box-shadow:4px 4px 0 #02050b!important}
+.store-balance-value{font-family:var(--pixel-font);text-shadow:2px 2px 0 #02050b}
+.store-card{border:3px solid #5d3a94!important;border-radius:0!important;background:linear-gradient(180deg,#120d22ee,#080612ee)!important;box-shadow:5px 5px 0 #02050b!important;position:relative;overflow:hidden}
+.store-card::before{content:"";position:absolute;inset:6px;border:1px solid #c38bff24;pointer-events:none}
+.store-card:hover{border-color:#b27aff!important;transform:translate(-1px,-1px);box-shadow:6px 6px 0 #02050b,0 0 18px #8a36ff25!important}
+.store-card-title{text-shadow:2px 2px 0 #02050b}
+.store-coming{border:1px dashed #5e4b78;padding:5px 8px;letter-spacing:1px}
+/* Souls counter — make it read like a classic HUD currency meter */
+.souls-box{border:3px solid #49b7ff!important;border-radius:0!important;background:linear-gradient(180deg,#0c213c,#061122)!important;box-shadow:5px 5px 0 #02050b,0 0 0 2px #12375c,0 0 14px #168bff33!important;padding:6px 10px!important;min-width:124px!important;position:absolute;overflow:hidden}
+.souls-box::before{content:"SOULS";position:absolute;left:8px;top:2px;font:8px var(--pixel-font);letter-spacing:1px;color:#66caff;text-shadow:2px 2px 0 #02050b;opacity:.9}
+.souls-box::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 4px,#8bdcff08 4px 5px);pointer-events:none}
+.souls-box img{width:25px!important;height:25px!important;margin-top:6px;filter:drop-shadow(2px 2px 0 #02050b)!important}
+.souls-value{font-size:15px!important;margin-top:6px;color:#e8f8ff!important;min-width:48px;text-align:right}
+/* Make all clickable menu surfaces feel like one pixel-art system */
+.menu-btn,.menu-corner,.small-btn{border-radius:0!important;box-shadow:4px 4px 0 #02050b!important}
+
+
+/* USER SUPPLIED PIXEL BUTTONS — preserve labels/emojis, replace only the button rectangles */
+.menu-btn{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  background-size:100% 100%!important;
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  padding:0 54px!important;
+  min-height:58px;
+}
+.menu-btn::before{display:none!important}
+.menu-btn.primary{background-image:url("assets/menu_buttons/story_orange.png")!important}
+#endless.menu-btn{background-image:url("assets/menu_buttons/endless_blue.png")!important}
+#store.menu-btn{background-image:url("assets/menu_buttons/store_purple.png")!important}
+.menu-btn:hover:not(:disabled){filter:brightness(1.08)!important;transform:translateY(-1px)!important}
+.menu-btn:active:not(:disabled){transform:translate(1px,1px)!important;filter:brightness(.96)!important}
+.menu-btn .menu-label{position:relative;z-index:2;white-space:nowrap}
+.menu-btn .menu-emoji{position:relative;z-index:2;flex:0 0 auto}
+/* Settings + Controls: icon only, no surrounding button border/shadow */
+.settings-btn,.controller-btn{
+  border:0!important;
+  outline:none!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  border-radius:0!important;
+}
+.settings-btn:focus,.controller-btn:focus,.settings-btn:hover,.controller-btn:hover{
+  border:0!important;
+  outline:none!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+@media(max-width:650px){
+  .menu-btn{padding:0 36px!important;min-height:58px}
+}
+</style></head>
+<body>
+<div id="game">
+<canvas id="canvas"></canvas>
+<div id="hud"><span id="hudTitle">BLEACH DASH</span><span id="score">00000</span></div><div id="bossUI" class="boss-ui"><div class="boss-name">Grand Fisher</div><div class="boss-bar"><div id="bossFill" class="boss-fill"></div></div></div>
+<div id="controls"><span id="jumpHint">TAP · JUMP</span><span id="attackHint">X/Z · GETSUGA</span></div>
+<audio id="menuMusic" preload="auto" loop playsinline aria-hidden="true"></audio>
+<audio id="chapter1IntroMusic" preload="auto" playsinline aria-hidden="true"></audio>
+<audio id="chapter1LoopMusic" preload="auto" loop playsinline aria-hidden="true"></audio>
+<audio id="bossMusic" preload="auto" loop playsinline aria-hidden="true"></audio>
+
+<div id="overlay">
+  <div class="panel main-menu-panel" id="mainPanel">
+    <div class="main-top">
+      <button id="settings" class="menu-corner settings-btn" title="Settings" aria-label="Settings"><img src="assets/gear_icon.png" alt=""></button>
+      <button id="controller" class="menu-corner controller-btn" title="Controls" aria-label="Controls"><img src="assets/gamepad_icon.png" alt=""></button>
+      <img id="menuLogo" class="main-title" src="assets/menu_title_en.png" alt="Bleach Dash">
+      <button id="language" class="menu-corner language-btn"><span>AR/ENG</span><img src="assets/globe_icon.png" alt=""></button>
+      <button id="accountBtn" class="online-btn icon-online-btn account-online-btn" type="button" aria-label="Account" title="Account"><img src="assets/account_icon.png" alt="Account"></button>
+      <button id="leaderboardBtn" class="online-btn icon-online-btn leaderboard-online-btn" type="button" aria-label="Leaderboard" title="Leaderboard"><img src="assets/leaderboard_icon.png" alt="Leaderboard"></button>
+    </div>
+    <div class="pixel-decor pixel-stars"></div><div class="pixel-petals" aria-hidden="true"></div>
+    <div class="main-mid">
+      <img id="menuIcon" class="main-menu-logo" src="assets/menu_icon_en.png" alt="Bleach Dash">
+      <div></div>
+      <div id="bestScoreMenu" class="best-box"><img src="assets/trophy_icon.png" alt=""><span class="best-text">BEST: 00000</span></div>
+      <div id="soulsMenu" class="souls-box"><img src="assets/souls_icon.png" alt=""><span id="soulsMenuValue" class="souls-value">000</span></div>
+    </div>
+    <div id="characterDisplay" class="character-display" role="button" tabindex="0" title="Change character" aria-label="Change character">
+      <div class="character-display-frame"><img id="characterDisplayImg" src="assets/boss/ichigo_idle_1.png" alt=""></div>
+      <div id="characterDisplayName" class="character-display-name">ICHIGO</div>
+    </div>
+    <button id="characterSelectBtn" class="character-select-btn" type="button">CHARACTERS</button>
+    <div id="socialLinks" class="social-links" aria-label="Bleach Dash social media">
+      <a class="social-link instagram" href="https://www.instagram.com/bleach_revived?igsi=MjBldWY3eGJtcTNr" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="assets/instagram_badge.png" alt="Instagram"></a>
+      <a class="social-link tiktok" href="https://www.tiktok.com/@bleach_revived?_r=1&_t=ZS-99BKixrC0xx" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="assets/tiktok_badge.png" alt="TikTok"></a>
+    </div>
+
+    <div class="menu-buttons">
+      <button id="start" class="menu-btn primary"><span class="menu-label">STORY CHAPTERS</span><img class="menu-emoji" src="assets/skull_icon.png" alt=""></button>
+      <button id="endless" class="menu-btn"><span class="menu-label">ENDLESS MODE</span><img class="menu-emoji" src="assets/swords_icon.png" alt=""></button>
+      <button id="store" class="menu-btn"><span class="menu-label">STORE</span><img class="menu-emoji" src="assets/chest_icon_ref.png" alt=""></button>
+    </div>
+    <div id="menuNotice" class="menu-notice"></div>
+  </div>
+  <div class="panel chapter-panel" id="chapterPanel">
+    <div class="chapter-header"><button id="chapterBack" class="back-btn">← BACK</button><div id="chapterTitle" class="chapter-title">CHAPTERS</div><div style="width:72px"></div></div>
+    <div class="chapter-grid">
+      <button id="chapter1" class="chapter-card">
+        <img class="chapter-card-bg" src="assets/bg_day.jpg" alt="">
+        <span class="chapter-card-content"><span class="chapter-name">CHAPTER 1</span><span class="chapter-desc">Reach 1000 score and face Grand Fisher.</span></span>
+      </button>
+      <button class="chapter-card locked" disabled><span class="chapter-lock">🔒</span><span class="chapter-card-content"><span class="chapter-name">CHAPTER 2</span><span class="chapter-desc">Locked</span></span></button>
+      <button class="chapter-card coming" disabled><span class="coming-text">COMING SOON?</span></button>
+      <button class="chapter-card coming" disabled><span class="coming-text">COMING SOON?</span></button>
+      <button class="chapter-card coming" disabled><span class="coming-text">COMING SOON?</span></button>
+      <button class="chapter-card coming" disabled><span class="coming-text">COMING SOON?</span></button>
+    </div>
+  </div>
+  <div class="panel store-panel" id="storePanel" aria-hidden="true">
+    <div class="store-header"><button id="storeBack" class="back-btn">← BACK</button><div id="storeTitle" class="store-title">STORE</div><div id="storeBalance" class="store-balance"><img src="assets/souls_icon.png" alt=""><span id="storeBalanceValue" class="store-balance-value">000</span></div></div>
+    <div class="store-grid">
+      <div class="store-card"><img src="assets/souls_icon.png" alt=""><div id="storeCharactersTitle" class="store-card-title">CHARACTERS</div><div id="storeCharactersDesc" class="store-card-desc">Buy characters with Souls.</div><div id="storeCharactersComing" class="store-coming">COMING SOON</div></div>
+      <div class="store-card"><img src="assets/chest_icon_ref.png" alt=""><div id="storeFutureTitle" class="store-card-title">MORE ITEMS</div><div id="storeFutureDesc" class="store-card-desc">Future cosmetics and upgrades.</div><div id="storeFutureComing" class="store-coming">COMING SOON</div></div>
+    </div>
+  </div>
+  <div id="characterModal" class="character-modal" aria-hidden="true">
+    <div class="character-card-panel" role="dialog" aria-modal="true" aria-labelledby="characterModalTitle">
+      <div class="character-card-header">
+        <div id="characterModalTitle" class="character-card-title">CHARACTERS</div>
+        <button id="characterClose" class="character-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div id="characterGrid" class="character-grid">
+        <button class="character-option selected" type="button" data-character="ichigo">
+          <img src="assets/boss/ichigo_idle_1.png" alt="Ichigo">
+          <span class="character-option-name">ICHIGO</span>
+        </button>
+        <button class="character-option locked" type="button" disabled>
+          <img src="assets/boss/ichigo_idle_1.png" alt="">
+          <span class="character-option-name">???</span>
+        </button>
+        <button class="character-option locked" type="button" disabled>
+          <img src="assets/boss/ichigo_idle_1.png" alt="">
+          <span class="character-option-name">???</span>
+        </button>
+        <button class="character-option locked" type="button" disabled>
+          <img src="assets/boss/ichigo_idle_1.png" alt="">
+          <span class="character-option-name">???</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="lossPanel" class="result-panel loss" aria-hidden="true"><div class="result-inner"><h1 id="lossTitle" class="result-title">YOU LOST</h1><div id="lossSubtitle" class="result-subtitle">The run is over...</div><div class="result-stats"><div class="result-stat"><div id="runScoreLabel" class="result-stat-label">THIS RUN</div><div id="runScoreValue" class="result-stat-value">00000</div></div><div class="result-stat"><div id="allTimeLabel" class="result-stat-label">ALL-TIME BEST</div><div id="allTimeValue" class="result-stat-value">00000</div></div></div><div class="result-actions"><button id="lossRevive" class="result-btn revive-btn" type="button">REVIVE · 100 SOULS</button><button id="lossTryAgain" class="result-btn primary" type="button">TRY AGAIN</button><button id="lossMainMenu" class="result-btn secondary" type="button">MAIN MENU</button></div></div></div>
+<div id="winPanel" class="result-panel win" aria-hidden="true"><div class="result-inner"><h1 id="winTitle" class="result-title">YOU WON!</h1><div id="winSubtitle" class="result-subtitle">GRAND FISHER DEFEATED!</div><div class="result-stats"><div class="result-stat"><div id="victoryScoreLabel" class="result-stat-label">VICTORY SCORE</div><div id="victoryScoreValue" class="result-stat-value">1000</div></div></div><div class="result-actions"><button id="winMainMenu" class="result-btn primary" type="button">MAIN MENU</button></div></div></div>
+<div id="accountModal" class="controls-modal hidden" aria-hidden="true">
+  <div class="controls-card online-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+    <button id="closeAccount" class="controls-close">×</button>
+    <div id="accountTitle" class="controls-title">ACCOUNT</div>
+    <div id="accountStatus" class="online-status">NOT SIGNED IN</div>
+    <div id="accountLoggedOut">
+      <input id="accountUsername" class="online-input" type="text" maxlength="16" autocomplete="username" placeholder="USERNAME">
+      <input id="accountEmail" class="online-input" type="email" autocomplete="email" placeholder="EMAIL">
+      <input id="accountPassword" class="online-input" type="password" minlength="6" autocomplete="current-password" placeholder="PASSWORD">
+      <div class="online-actions">
+        <button id="accountLogin" class="result-btn primary" type="button">LOGIN</button>
+        <button id="accountRegister" class="result-btn secondary" type="button">CREATE ACCOUNT</button>
+      </div>
+      <div id="accountHint" class="online-hint">Create an account to save Souls, progress and scores across devices.</div>
+    </div>
+    <div id="accountLoggedIn" class="hidden">
+      <div class="online-profile"><span id="accountUsernameDisplay">PLAYER</span></div>
+      <div class="online-profile-stats">
+        <span>SOULS <b id="accountSoulsDisplay">000</b></span>
+        <span>BEST <b id="accountBestDisplay">00000</b></span>
+      </div>
+      <button id="accountLogout" class="result-btn secondary" type="button">LOG OUT</button>
+    </div>
+  </div>
+</div>
+<div id="leaderboardModal" class="controls-modal hidden" aria-hidden="true">
+  <div class="controls-card leaderboard-card" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
+    <button id="closeLeaderboard" class="controls-close">×</button>
+    <div id="leaderboardTitle" class="controls-title">LEADERBOARD</div>
+    <div id="leaderboardStatus" class="online-status">TOP PLAYERS</div>
+    <div id="leaderboardList" class="leaderboard-list"><div class="leaderboard-empty">Loading...</div></div>
+    <button id="leaderboardRefresh" class="result-btn secondary" type="button">REFRESH</button>
+  </div>
+</div>
+<div id="settingsModal" class="controls-modal hidden" aria-hidden="true">
+  <div class="controls-card settings-card">
+    <button id="closeSettings" class="controls-close">×</button>
+    <div class="controls-title">SETTINGS</div>
+    <div class="settings-section audio-settings">
+      <div class="control-heading">AUDIO</div>
+      <div class="audio-setting">
+        <div class="audio-setting-head"><span>MUSIC</span><button id="musicMuteBtn" class="audio-mute" type="button">MUTE</button></div>
+        <input id="musicVolume" class="audio-slider" type="range" min="0" max="100" value="32" aria-label="Music volume">
+      </div>
+      <div class="audio-setting">
+        <div class="audio-setting-head"><span>SFX</span><button id="sfxMuteBtn" class="audio-mute" type="button">MUTE</button></div>
+        <input id="sfxVolume" class="audio-slider" type="range" min="0" max="100" value="34" aria-label="SFX volume">
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="control-heading">CONTROL MODE</div>
+      <button id="normalControlsOption" class="control-mode-option" type="button"><span>NORMAL</span><small>TAP / GESTURE CONTROLS</small></button>
+      <button id="buttonControlsOption" class="control-mode-option" type="button"><span>BUTTONS</span><small>ON-SCREEN GAME BUTTONS</small></button>
+    </div>
+  </div>
+</div>
+<div id="mobileControls" class="mobile-controls hidden" aria-hidden="true">
+  <button id="mobileSlide" class="mobile-control slide-control" type="button" aria-label="Slide">▼</button>
+  <button id="mobileJump" class="mobile-control jump-control" type="button" aria-label="Jump">▲</button>
+  <button id="mobileAttack" class="mobile-control attack-control" type="button" aria-label="Getsuga">⚔</button>
+</div>
+<div id="controlsModal" class="controls-modal hidden">
+  <div class="controls-card">
+    <button id="closeControls" class="controls-close">×</button>
+    <div class="controls-title">CONTROLS</div>
+    <div class="controls-grid">
+      <div class="control-section">
+        <div class="control-heading">LAPTOP</div>
+        <div>SPACE / TAP — JUMP</div>
+        <div>HOLD DOWN — DUCK</div>
+        <div>X / DOUBLE TAP — GETSUGA</div>
+      </div>
+      <div class="control-section">
+        <div class="control-heading">PHONE</div>
+        <div>TAP — JUMP</div>
+        <div>HOLD — DUCK</div>
+        <div>DOUBLE TAP — GETSUGA</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+const settingsModal=document.getElementById('settingsModal'),closeSettings=document.getElementById('closeSettings'),normalControlsOption=document.getElementById('normalControlsOption'),buttonControlsOption=document.getElementById('buttonControlsOption'),mobileControls=document.getElementById('mobileControls'),mobileJump=document.getElementById('mobileJump'),mobileAttack=document.getElementById('mobileAttack'),mobileSlide=document.getElementById('mobileSlide'),musicVolume=document.getElementById('musicVolume'),sfxVolume=document.getElementById('sfxVolume'),musicMuteBtn=document.getElementById('musicMuteBtn'),sfxMuteBtn=document.getElementById('sfxMuteBtn');
+const bossUI=document.getElementById('bossUI'),bossFill=document.getElementById('bossFill'),scoreEl=document.getElementById('score'),overlay=document.getElementById('overlay'),startBtn=document.getElementById('start'),endlessBtn=document.getElementById('endless'),settingsBtn=document.getElementById('settings'),controllerBtn=document.getElementById('controller'),languageBtn=document.getElementById('language'),menuLogo=document.getElementById('menuLogo'),bestScoreMenu=document.getElementById('bestScoreMenu'),hudTitle=document.getElementById('hudTitle'),jumpHint=document.getElementById('jumpHint'),attackHint=document.getElementById('attackHint'),mainPanel=document.getElementById('mainPanel'),chapterPanel=document.getElementById('chapterPanel'),chapterBack=document.getElementById('chapterBack'),chapter1Btn=document.getElementById('chapter1'),storeBtn=document.getElementById('store'),menuNotice=document.getElementById('menuNotice'),controlsModal=document.getElementById('controlsModal'),closeControls=document.getElementById('closeControls'),characterSelectBtn=document.getElementById('characterSelectBtn'),characterDisplay=document.getElementById('characterDisplay'),characterModal=document.getElementById('characterModal'),characterClose=document.getElementById('characterClose'),characterDisplayImg=document.getElementById('characterDisplayImg'),characterDisplayName=document.getElementById('characterDisplayName'),characterGrid=document.getElementById('characterGrid'),lossPanel=document.getElementById('lossPanel'),winPanel=document.getElementById('winPanel'),lossTitle=document.getElementById('lossTitle'),lossSubtitle=document.getElementById('lossSubtitle'),runScoreLabel=document.getElementById('runScoreLabel'),runScoreValue=document.getElementById('runScoreValue'),allTimeLabel=document.getElementById('allTimeLabel'),allTimeValue=document.getElementById('allTimeValue'),lossTryAgain=document.getElementById('lossTryAgain'),lossMainMenu=document.getElementById('lossMainMenu'),winTitle=document.getElementById('winTitle'),winSubtitle=document.getElementById('winSubtitle'),victoryScoreLabel=document.getElementById('victoryScoreLabel'),victoryScoreValue=document.getElementById('victoryScoreValue'),winMainMenu=document.getElementById('winMainMenu'),soulsMenu=document.getElementById('soulsMenu'),soulsMenuValue=document.getElementById('soulsMenuValue'),accountBtn=document.getElementById('accountBtn'),leaderboardBtn=document.getElementById('leaderboardBtn'),accountModal=document.getElementById('accountModal'),closeAccount=document.getElementById('closeAccount'),accountStatus=document.getElementById('accountStatus'),accountLoggedOut=document.getElementById('accountLoggedOut'),accountLoggedIn=document.getElementById('accountLoggedIn'),accountUsername=document.getElementById('accountUsername'),accountEmail=document.getElementById('accountEmail'),accountPassword=document.getElementById('accountPassword'),accountLogin=document.getElementById('accountLogin'),accountRegister=document.getElementById('accountRegister'),accountLogout=document.getElementById('accountLogout'),accountHint=document.getElementById('accountHint'),accountUsernameDisplay=document.getElementById('accountUsernameDisplay'),accountSoulsDisplay=document.getElementById('accountSoulsDisplay'),accountBestDisplay=document.getElementById('accountBestDisplay'),leaderboardModal=document.getElementById('leaderboardModal'),closeLeaderboard=document.getElementById('closeLeaderboard'),leaderboardStatus=document.getElementById('leaderboardStatus'),leaderboardList=document.getElementById('leaderboardList'),leaderboardRefresh=document.getElementById('leaderboardRefresh'),storePanel=document.getElementById('storePanel'),storeBack=document.getElementById('storeBack'),storeTitle=document.getElementById('storeTitle'),storeBalanceValue=document.getElementById('storeBalanceValue'),storeCharactersTitle=document.getElementById('storeCharactersTitle'),storeCharactersDesc=document.getElementById('storeCharactersDesc'),storeFutureTitle=document.getElementById('storeFutureTitle'),storeFutureDesc=document.getElementById('storeFutureDesc'),lossRevive=document.getElementById('lossRevive');
+let W=1100,H=520,dpr=1,playing=false,last=0,score=0,speed=390,ground=430,gameTime=0,worldScale=1;
+let language=localStorage.getItem('bleachDashLanguage')||'en';
+let controlMode=localStorage.getItem('bleachDashControlMode')||'normal';
+let bestScore=Number(localStorage.getItem('bleachDashBest')||0);
+let souls=Math.max(0,Number(localStorage.getItem('bleachDashSouls')||0));
+
+// Supabase account/cloud-save layer. The game still works offline when not configured.
+const SUPABASE_CONFIG=window.BLEACH_DASH_SUPABASE||{};
+const supabaseConfigured=!!(SUPABASE_CONFIG.url&&SUPABASE_CONFIG.anonKey&&
+  !String(SUPABASE_CONFIG.url).includes('PASTE_')&&!String(SUPABASE_CONFIG.anonKey).includes('PASTE_'));
+const supabaseClient=supabaseConfigured&&window.supabase?window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey):null;
+let currentUser=null,currentProfile=null,cloudSyncTimer=null;
+const REVIVE_COST=100;
+let reviveUsed=false;
+let soulPopups=[];
+const soulsIconImg=new Image();soulsIconImg.src='assets/souls_icon.png';
+let player,obstacles=[],dyingObstacles=[],projectiles=[],particles=[],spawnTimer=0,jumpTime=0,deathStart=0;let bossMode=false,boss=null,bossProjectiles=[],bossVictory=false,bossDeathStart=0,endlessMode=false;let bossCheatCount=0,bossCheatLast=0;let secretCombo='',secretComboLast=0;
+// Original Web Audio SFX: no external copyrighted audio files required.
+let audioCtx=null,audioMaster=null,sfxReady=false;
+const audioPrefs={musicVolume:Number(localStorage.getItem('bleachDashMusicVolume') ?? 32),sfxVolume:Number(localStorage.getItem('bleachDashSfxVolume') ?? 34),musicMuted:localStorage.getItem('bleachDashMusicMuted')==='1',sfxMuted:localStorage.getItem('bleachDashSfxMuted')==='1'};
+function clampVolume(v){return Math.max(0,Math.min(100,Number(v)||0));}
+function applyAudioPrefs(){
+  audioPrefs.musicVolume=clampVolume(audioPrefs.musicVolume); audioPrefs.sfxVolume=clampVolume(audioPrefs.sfxVolume);
+  const musicVol=audioPrefs.musicMuted?0:audioPrefs.musicVolume/100;
+  if(menuMusic)menuMusic.volume=musicVol;
+  if(chapter1IntroMusic)chapter1IntroMusic.volume=musicVol;
+  if(chapter1LoopMusic)chapter1LoopMusic.volume=musicVol;
+  if(bossMusic)bossMusic.volume=musicVol;
+  if(audioMaster)audioMaster.gain.value=audioPrefs.sfxMuted?0:audioPrefs.sfxVolume/100;
+  if(musicVolume)musicVolume.value=String(audioPrefs.musicVolume);
+  if(sfxVolume)sfxVolume.value=String(audioPrefs.sfxVolume);
+  if(musicMuteBtn){musicMuteBtn.textContent=audioPrefs.musicMuted?'UNMUTE':'MUTE';musicMuteBtn.classList.toggle('active',audioPrefs.musicMuted);}
+  if(sfxMuteBtn){sfxMuteBtn.textContent=audioPrefs.sfxMuted?'UNMUTE':'MUTE';sfxMuteBtn.classList.toggle('active',audioPrefs.sfxMuted);}
+}
+function saveAudioPrefs(){localStorage.setItem('bleachDashMusicVolume',String(audioPrefs.musicVolume));localStorage.setItem('bleachDashSfxVolume',String(audioPrefs.sfxVolume));localStorage.setItem('bleachDashMusicMuted',audioPrefs.musicMuted?'1':'0');localStorage.setItem('bleachDashSfxMuted',audioPrefs.sfxMuted?'1':'0');}
+
+function initAudio(){
+  if(!audioCtx){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return;
+    audioCtx=new AC();
+    audioMaster=audioCtx.createGain();
+    audioMaster.gain.value=audioPrefs.sfxMuted?0:audioPrefs.sfxVolume/100;
+    audioMaster.connect(audioCtx.destination);
+  }
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  sfxReady=true;
+}
+// Pixel-art main menu music.
+// The supplied track is played as a local asset and loops while menu/chapter/store screens are open.
+const menuMusic=document.getElementById('menuMusic');
+const chapter1IntroMusic=document.getElementById('chapter1IntroMusic');
+const chapter1LoopMusic=document.getElementById('chapter1LoopMusic');
+const bossMusic=document.getElementById('bossMusic');
+menuMusic.src='assets/music/menu_theme.mp3';
+menuMusic.loop=true;
+chapter1IntroMusic.src='assets/music/chapter1_intro.mp3';
+chapter1IntroMusic.loop=false;
+chapter1LoopMusic.src='assets/music/chapter1_loop.mp3';
+chapter1LoopMusic.loop=true;
+bossMusic.src='assets/music/chapter1_boss.mp3';
+bossMusic.loop=true;
+chapter1IntroMusic.addEventListener('ended',()=>{
+  if(chapter1LoopMusic && !bossMode && playing && !endlessMode){
+    const p=chapter1LoopMusic.play();
+    if(p&&typeof p.catch==='function')p.catch(()=>{});
+  }
+});
+applyAudioPrefs();
+function startMenuMusic(){
+  stopBossMusic();
+  if(!menuMusic)return;
+  const p=menuMusic.play();
+  if(p&&typeof p.catch==='function')p.catch(()=>{});
+}
+function startChapter1Music(){
+  if(!chapter1IntroMusic||!chapter1LoopMusic)return;
+  stopChapter1Music();
+  applyAudioPrefs();
+  const p=chapter1IntroMusic.play();
+  if(p&&typeof p.catch==='function')p.catch(()=>{});
+}
+function startChapter1LoopMusic(){
+  if(!chapter1LoopMusic)return;
+  chapter1IntroMusic.pause();
+  chapter1IntroMusic.currentTime=0;
+  applyAudioPrefs();
+  const p=chapter1LoopMusic.play();
+  if(p&&typeof p.catch==='function')p.catch(()=>{});
+}
+function startBossMusic(){
+  if(!bossMusic)return;
+  stopChapter1Music();
+  applyAudioPrefs();
+  const p=bossMusic.play();
+  if(p&&typeof p.catch==='function')p.catch(()=>{});
+}
+function stopBossMusic(){
+  if(!bossMusic)return;
+  bossMusic.pause();
+  bossMusic.currentTime=0;
+}
+function stopChapter1Music(){
+  if(chapter1IntroMusic){
+    chapter1IntroMusic.pause();
+    chapter1IntroMusic.currentTime=0;
+  }
+  if(chapter1LoopMusic){
+    chapter1LoopMusic.pause();
+    chapter1LoopMusic.currentTime=0;
+  }
+}
+function stopMenuMusic(){
+  if(!menuMusic)return;
+  menuMusic.pause();
+  menuMusic.currentTime=0;
+}
+function envGain(g,t0,dur,peak=.18){
+  g.gain.cancelScheduledValues(t0);
+  g.gain.setValueAtTime(.0001,t0);
+  g.gain.exponentialRampToValueAtTime(Math.max(.0001,peak),t0+.008);
+  g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+}
+function tone(freqStart,freqEnd,dur,type='sine',peak=.16,delay=0){
+  if(!sfxReady)return;
+  const t=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;o.frequency.setValueAtTime(freqStart,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,freqEnd),t+dur);
+  envGain(g,t,dur,peak);o.connect(g);g.connect(audioMaster);o.start(t);o.stop(t+dur+.02);
+}
+function noise(dur=.12,peak=.12,filterFreq=2200,delay=0){
+  if(!sfxReady)return;
+  const t=audioCtx.currentTime+delay,buffer=audioCtx.createBuffer(1,Math.max(1,Math.floor(audioCtx.sampleRate*dur)),audioCtx.sampleRate),data=buffer.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*(1-i/data.length);
+  const src=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+  f.type='bandpass';f.frequency.value=filterFreq;f.Q.value=.7;envGain(g,t,dur,peak);src.buffer=buffer;src.connect(f);f.connect(g);g.connect(audioMaster);src.start(t);src.stop(t+dur+.02);
+}
+function sfxMenu(){tone(520,760,.07,'square',.09);}
+function sfxJump(){tone(220,430,.13,'triangle',.12);noise(.055,.045,1800,.015);}
+function sfxGetsugaCharge(){tone(150,520,.20,'sawtooth',.10);tone(310,760,.18,'sine',.07,.03);}
+function sfxGetsugaLaunch(){noise(.16,.16,1500);tone(180,70,.18,'sine',.12);tone(520,980,.12,'triangle',.08,.01);}
+function sfxImpact(){noise(.13,.18,900);tone(110,55,.16,'sine',.15);}
+function sfxHurdleBreak(){noise(.18,.14,650);noise(.08,.08,1800,.025);}
+function sfxGameOver(){tone(260,120,.32,'sawtooth',.13);tone(150,70,.45,'triangle',.09,.10);}
+const bossIchigoIdleFrames=[],bossIchigoDuckFrames=[],bossIchigoAttackFrames=[],bossIchigoJumpFrames=[],bossGrandIdleFrames=[],bossGrandAttackFrames=[],bossGrandDeathFrames=[];
+const runFrames=[],jumpFrames=[],deathFrames=[],attackFrames=[],hurdleIdleFrames=[],hurdleDeathFrames=[],hollowIdleFrames=[],hollowDeathFrames=[],mediumHollowIdleFrames=[],largeHollowIdleFrames=[],flyingHollowIdleFrames=[],flyingHollowDeathFrames=[],highFlyingHollowIdleFrames=[];
+const ichigoAtlas=new Image(); ichigoAtlas.src='assets/ichigo_master_sheet.png';
+const atlasFrames={run:[],jump:[],attack:[],death:[]};const slideSheet=new Image();slideSheet.src='assets/slide_sheet.png';
+const backgrounds={day:new Image(),evening:new Image(),night:new Image()};
+for(const k of Object.keys(backgrounds)) backgrounds[k].src=`assets/bg_${k}.jpg`;
+function loadFrames(list,prefix,count){for(let i=1;i<=count;i++){const img=new Image();img.src=`assets/${prefix}_${i}.png`;list.push(img)}}
+loadFrames(jumpFrames,'jump',10);loadFrames(deathFrames,'death',10);loadFrames(attackFrames,'actions/attack',6);
+for(let i=0;i<20;i++)atlasFrames.run.push({x:(i%10)*220,y:Math.floor(i/10)*220,w:220,h:220});
+for(let i=0;i<10;i++)atlasFrames.jump.push({x:i*220,y:440,w:220,h:220});
+for(let i=0;i<6;i++)atlasFrames.attack.push({x:i*220,y:660,w:220,h:220});
+for(let i=0;i<10;i++)atlasFrames.death.push({x:i*220,y:880,w:220,h:220});
+for(let i=1;i<=4;i++){const img=new Image();img.src=`assets/hurdle/${i}.png`;hurdleIdleFrames.push(img)}
+for(let i=5;i<=7;i++){const img=new Image();img.src=`assets/hurdle/${i}.png`;hurdleDeathFrames.push(img)}
+for(const n of ['idle_1.png','idle_2.png','idle_3.png']){const img=new Image();img.src=`assets/hollow/${n}`;hollowIdleFrames.push(img)}
+for(const n of ['death_1.png','death_2.png','death_3.png','death_4.png']){const img=new Image();img.src=`assets/hollow/${n}`;hollowDeathFrames.push(img)}
+for(const n of ['idle_1.png','idle_2.png','idle_3.png']){const img=new Image();img.src=`assets/hollow_medium/${n}`;mediumHollowIdleFrames.push(img)}
+for(let i=1;i<=8;i++){const img=new Image();img.src=`assets/hollow_large/idle_${i}.png`;largeHollowIdleFrames.push(img)}
+for(let i=1;i<=6;i++){const img=new Image();img.src=`assets/flying_hollow/idle_${i}.png`;flyingHollowIdleFrames.push(img)}
+for(let i=1;i<=6;i++){const img=new Image();img.src=`assets/flying_hollow/death_${i}.png`;flyingHollowDeathFrames.push(img)}
+for(let i=1;i<=8;i++){const img=new Image();img.src=`assets/high_flying_hollow/idle_${i}.png`;highFlyingHollowIdleFrames.push(img)}
+function loadBossFrameImages(list,prefix,count,cacheKey='v2'){for(let i=1;i<=count;i++){const img=new Image();img.decoding='sync';img.src=`assets/boss/${prefix}_${i}.png?${cacheKey}=${i}`;list.push(img)}}
+function addGridFrames(list,cols,rowHeights){
+  let y=0;
+  for(const h of rowHeights){
+    const w=1536/cols;
+    for(let c=0;c<cols;c++) list.push({x:c*w,y,w,h});
+    y+=h;
+  }
+}
+loadBossFrameImages(bossIchigoIdleFrames,'ichigo_idle',8);
+loadBossFrameImages(bossIchigoDuckFrames,'ichigo_duck',11,'duck11f512h_fixed78');
+loadBossFrameImages(bossIchigoAttackFrames,'ichigo_boss_attack_body',7,'body7f512h');
+loadBossFrameImages(bossIchigoJumpFrames,'ichigo_boss_jump',9,'jump9f512h');
+// AUTHORITATIVE BOSS ATTACK: exactly these 7 independent RGBA PNGs.
+// The normal runner attack assets remain separate and are NOT used for the boss Ichigo.
+// Cache-busting prevents an older browser-cached attack sheet/frame from being reused.
+const bossIchigoAttackLoadState=bossIchigoAttackFrames.map(()=>false);
+bossIchigoAttackFrames.forEach((img,i)=>{img.addEventListener('load',()=>bossIchigoAttackLoadState[i]=true,{once:true});});
+const bossSheets={grandIdle:new Image(),grandAttack:new Image()};
+bossSheets.grandIdle.src='assets/boss/grand_idle_sheet.png';
+bossSheets.grandAttack.src='assets/boss/grand_attack_sheet.png';
+// Grand Fisher death animation: use pre-split canonical 384x512 transparent frames.
+// Each frame is an independent asset, so the renderer never samples a neighboring
+// frame or accidentally crops/bleeds across sheet boundaries.
+for(let i=0;i<18;i++){const im=new Image();im.src=`assets/boss/grand_death/${i+1}.png`;bossGrandDeathFrames.push(im)}
+for(let r=0;r<2;r++)for(let c=0;c<4;c++)bossGrandIdleFrames.push({x:c*384,y:r*512,w:384,h:512});
+for(let r=0;r<2;r++)for(let c=0;c<4;c++)bossGrandAttackFrames.push({x:c*384,y:r*512,w:384,h:512});
+const bossGrandProjectileFrames=[];
+for(let i=1;i<=12;i++){const im=new Image();im.src=`assets/boss/grand_projectile_${i}.png`;bossGrandProjectileFrames.push(im);}
+const bossGetsugaFrames=[];for(let i=1;i<=10;i++){const im=new Image();im.src=`assets/boss/ichigo_getsuga_projectile_${i}.png`;bossGetsugaFrames.push(im);}
+
+const I18N={en:{start:'STORY CHAPTERS',endless:'ENDLESS MODE',settings:'⚙',store:'STORE',subtitle:'Choose a chapter and run toward the next battle.',hint:'Tap = jump · hold = duck · double tap = Getsuga',best:'BEST',arabic:'🌐 AR/ENG',english:'🌐 AR/ENG',hud:'BLEACH DASH',jump:'SPACE / TAP · JUMP',attack:'X / DOUBLE TAP · GETSUGA',runOver:'RUN OVER',score:'Score',tryAgain:'Try again and beat it.',chapters:'STORY CHAPTERS',back:'← BACK',chapter1:'CHAPTER 1',chapter1desc:'Reach 1000 score and face Grand Fisher.',locked:'Locked',soon:'COMING SOON?',storeSoon:'Store coming soon.',characters:'CHARACTERS',selectCharacter:'CHANGE CHARACTER',ichigo:'ICHIGO',youLost:'YOU LOST',lossSubtitle:'The run is over...',thisRun:'THIS RUN',allTime:'ALL-TIME BEST',tryAgainBtn:'TRY AGAIN',mainMenu:'MAIN MENU',youWon:'YOU WON!',winSubtitle:'GRAND FISHER DEFEATED!',victoryScore:'VICTORY SCORE',souls:'SOULS',revive:'REVIVE · 100 SOULS',storeCharacters:'CHARACTERS',storeCharactersDesc:'Buy characters with Souls.',storeItems:'MORE ITEMS',storeItemsDesc:'Future cosmetics and upgrades.',comingSoon:'COMING SOON'},ar:{start:'فصول القصة',endless:'الوضع اللانهائي',settings:'⚙',store:'المتجر',subtitle:'اختر فصلًا وابدأ الركض نحو المعركة التالية.',hint:'ضغط = قفز · مطوّل = انحناء · ضغطتان = غيتسوغا',best:'أفضل نتيجة',arabic:'🌐 AR/ENG',english:'🌐 AR/ENG',hud:'بليتش داش',jump:'SPACE / TAP · قفز',attack:'X / ضغطتان · غيتسوغا',runOver:'انتهت الجولة',score:'النتيجة',tryAgain:'حاول مرة أخرى وحطّم رقمك.',chapters:'فصول القصة',back:'→ رجوع',chapter1:'الفصل 1',chapter1desc:'الوصول إلى 1000 نقطة ومواجهة Grand Fisher.',locked:'مغلق',soon:'قريبًا؟',storeSoon:'المتجر قريبًا.',characters:'الشخصيات',selectCharacter:'تغيير الشخصية',ichigo:'إيتشيغو',youLost:'خسرت',lossSubtitle:'انتهت الجولة...',thisRun:'هذه الجولة',allTime:'أفضل نتيجة',tryAgainBtn:'حاول مرة أخرى',mainMenu:'القائمة الرئيسية',youWon:'لقد فزت!',winSubtitle:'تم القضاء على Grand Fisher!',victoryScore:'نقاط الفوز',souls:'الأرواح',revive:'إحياء · 100 روح',storeCharacters:'الشخصيات',storeCharactersDesc:'اشترِ الشخصيات باستخدام الأرواح.',storeItems:'عناصر أخرى',storeItemsDesc:'مستحضرات وتطويرات مستقبلية.',comingSoon:'قريبًا'}};
+function updateSoulsUI(){const v=String(souls).padStart(3,'0');soulsMenuValue.textContent=v;storeBalanceValue.textContent=v;lossRevive.textContent=I18N[language].revive;lossRevive.disabled=reviveUsed||souls<REVIVE_COST;lossRevive.style.display='inline-block'}
+
+function setOnlineMessage(message,isError=false){
+  accountHint.textContent=message||'';
+  accountHint.style.color=isError?'#ff9c9c':'#aebbd2';
+}
+function updateAccountUI(){
+  const loggedIn=!!currentUser&&!!currentProfile;
+  accountLoggedOut.classList.toggle('hidden',loggedIn);
+  accountLoggedIn.classList.toggle('hidden',!loggedIn);
+  if(loggedIn){
+    accountStatus.textContent=`SIGNED IN · ${currentProfile.username}`;
+    accountUsernameDisplay.textContent=currentProfile.username;
+    accountSoulsDisplay.textContent=String(souls).padStart(3,'0');
+    accountBestDisplay.textContent=String(bestScore).padStart(5,'0');
+    accountBtn.setAttribute('aria-label',`Account: ${currentProfile.username}`); accountBtn.title=currentProfile.username;
+  }else{
+    accountStatus.textContent=supabaseConfigured?'NOT SIGNED IN':'SUPABASE NOT CONFIGURED';
+    accountBtn.setAttribute('aria-label','Account'); accountBtn.title='Account';
+  }
+}
+async function loadCloudProfile(){
+  if(!supabaseClient)return;
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  currentUser=user||null;
+  if(!user){currentProfile=null;updateAccountUI();return;}
+  const {data,error}=await supabaseClient.from('profiles').select('id,username,souls,best_score').eq('id',user.id).single();
+  if(error){console.warn('Bleach Dash profile load:',error);currentProfile=null;updateAccountUI();return;}
+  currentProfile=data;
+  // Keep the highest locally-known score, but use the cloud balance as the source
+  // of truth for an already-established account. New accounts can receive the
+  // current local progress once, which makes the first migration painless.
+  const localSouls=Math.max(0,Number(localStorage.getItem('bleachDashSouls')||0));
+  const localBest=Math.max(0,Number(localStorage.getItem('bleachDashBest')||0));
+  const isFreshProfile=(Number(data.souls||0)===0&&Number(data.best_score||0)===0);
+  if(isFreshProfile&&(localSouls>0||localBest>0)){
+    souls=localSouls;bestScore=Math.max(0,localBest);
+    await syncPlayerState();
+  }else{
+    souls=Math.max(0,Number(data.souls||0));
+    bestScore=Math.max(0,Number(data.best_score||0));
+    localStorage.setItem('bleachDashSouls',String(souls));
+    localStorage.setItem('bleachDashBest',String(bestScore));
+  }
+  updateSoulsUI();applyLanguage();updateAccountUI();
+}
+async function syncPlayerState(){
+  if(!supabaseClient||!currentUser)return;
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer=setTimeout(async()=>{
+    const payload={souls:Math.max(0,Math.floor(souls)),best_score:Math.max(0,Math.floor(bestScore)),updated_at:new Date().toISOString()};
+    const {data,error}=await supabaseClient.from('profiles').update(payload).eq('id',currentUser.id).select('id,username,souls,best_score').single();
+    if(error)console.warn('Bleach Dash cloud save:',error);
+    else{currentProfile=data;updateAccountUI();}
+  },250);
+}
+async function openAccountModal(){
+  if(playing)return;
+  accountModal.classList.remove('hidden');accountModal.setAttribute('aria-hidden','false');
+  setOnlineMessage('');
+  updateAccountUI();
+}
+function closeAccountModal(){accountModal.classList.add('hidden');accountModal.setAttribute('aria-hidden','true')}
+async function loginAccount(){
+  if(!supabaseClient){setOnlineMessage('Add your Supabase URL and anon key to supabase-config.js first.',true);return;}
+  const email=accountEmail.value.trim(),password=accountPassword.value;
+  if(!email||!password){setOnlineMessage('Enter your email and password.',true);return;}
+  accountLogin.disabled=true;
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  accountLogin.disabled=false;
+  if(error){setOnlineMessage(error.message,true);return;}
+  currentUser=data.user;await loadCloudProfile();closeAccountModal();
+}
+async function registerAccount(){
+  if(!supabaseClient){setOnlineMessage('Add your Supabase URL and anon key to supabase-config.js first.',true);return;}
+  const username=accountUsername.value.trim(),email=accountEmail.value.trim(),password=accountPassword.value;
+  if(!/^[A-Za-z0-9_]{3,16}$/.test(username)){setOnlineMessage('Username must be 3–16 letters, numbers or underscores.',true);return;}
+  if(!email||password.length<6){setOnlineMessage('Enter a valid email and a password of at least 6 characters.',true);return;}
+  accountRegister.disabled=true;
+  const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{username}}});
+  accountRegister.disabled=false;
+  if(error){setOnlineMessage(error.message,true);return;}
+  if(data.session){
+    currentUser=data.user;await loadCloudProfile();closeAccountModal();
+  }else{
+    setOnlineMessage('Account created. Check your email to confirm it, then log in.');
+  }
+}
+async function logoutAccount(){
+  if(supabaseClient)await supabaseClient.auth.signOut();
+  currentUser=null;currentProfile=null;
+  updateAccountUI();
+  setOnlineMessage('Signed out. Your local game data remains on this device.');
+}
+async function openLeaderboard(){
+  if(playing)return;
+  leaderboardModal.classList.remove('hidden');leaderboardModal.setAttribute('aria-hidden','false');
+  await refreshLeaderboard();
+}
+async function refreshLeaderboard(){
+  if(!supabaseClient){
+    leaderboardStatus.textContent='SUPABASE NOT CONFIGURED';
+    leaderboardList.innerHTML='<div class="leaderboard-empty">Connect Supabase to load the global leaderboard.</div>';
+    return;
+  }
+  leaderboardStatus.textContent='LOADING...';
+  leaderboardList.innerHTML='<div class="leaderboard-empty">Loading...</div>';
+  const {data,error}=await supabaseClient.from('profiles').select('id,username,best_score').order('best_score',{ascending:false}).order('username',{ascending:true}).limit(50);
+  if(error){
+    leaderboardStatus.textContent='ERROR';
+    leaderboardList.innerHTML=`<div class="leaderboard-empty">${String(error.message).replace(/[<>]/g,'')}</div>`;
+    return;
+  }
+  leaderboardStatus.textContent='TOP 50';
+  if(!data.length){leaderboardList.innerHTML='<div class="leaderboard-empty">No players yet.</div>';return;}
+  leaderboardList.innerHTML=data.map((p,i)=>{
+    const me=currentUser&&p.id===currentUser.id?' me':'';
+    return `<div class="leaderboard-row${me}"><div class="leaderboard-rank">#${i+1}</div><div class="leaderboard-name">${String(p.username).replace(/[<>]/g,'')}</div><div class="leaderboard-score">${String(Math.floor(p.best_score||0)).padStart(5,'0')}</div></div>`;
+  }).join('');
+}
+function closeLeaderboardModal(){leaderboardModal.classList.add('hidden');leaderboardModal.setAttribute('aria-hidden','true')}
+function applyLanguage(){const t=I18N[language]; accountBtn.setAttribute('aria-label',currentProfile?`Account: ${currentProfile.username||'Account'}`:'Account'); accountBtn.title=currentProfile?(currentProfile.username||'Account'):'Account'; leaderboardBtn.setAttribute('aria-label',language==='ar'?'لائحة الصدارة':'Leaderboard'); leaderboardBtn.title=language==='ar'?'لائحة الصدارة':'Leaderboard'; document.documentElement.lang=language; document.body.dir=language==='ar'?'rtl':'ltr'; startBtn.querySelector('.menu-label').textContent=t.start; endlessBtn.querySelector('.menu-label').textContent=t.endless; storeBtn.querySelector('.menu-label').textContent=t.store; bestScoreMenu.querySelector('.best-text').textContent=`${t.best}: ${String(bestScore).padStart(5,'0')}`; languageBtn.querySelector('span').textContent='AR/ENG'; hudTitle.textContent=t.hud; jumpHint.textContent=t.jump; attackHint.textContent=t.attack; menuLogo.src=language==='en'?'assets/menu_title_en.png':'assets/menu_title_ar.png'; menuIcon.src=language==='en'?'assets/menu_icon_en.png':'assets/menu_icon_ar.png'; document.getElementById('chapterTitle').textContent=t.chapters; chapterBack.textContent=t.back; chapter1Btn.querySelector('.chapter-name').textContent=t.chapter1; chapter1Btn.querySelector('.chapter-desc').textContent=t.chapter1desc; document.querySelectorAll('.chapter-card.locked .chapter-desc').forEach(el=>el.textContent=t.locked); document.querySelectorAll('.chapter-card.coming .coming-text').forEach(el=>el.textContent=t.soon); characterSelectBtn.textContent=t.selectCharacter; document.getElementById('characterModalTitle').textContent=t.characters; characterDisplayName.textContent=t.ichigo; const first=characterGrid.querySelector('[data-character="ichigo"] .character-option-name'); if(first)first.textContent=t.ichigo; lossTitle.textContent=t.youLost; lossSubtitle.textContent=t.lossSubtitle; runScoreLabel.textContent=t.thisRun; allTimeLabel.textContent=t.allTime; lossTryAgain.textContent=t.tryAgainBtn; lossMainMenu.textContent=t.mainMenu; winTitle.textContent=t.youWon; winSubtitle.textContent=t.winSubtitle; victoryScoreLabel.textContent=t.victoryScore; winMainMenu.textContent=t.mainMenu; storeTitle.textContent=t.store; storeBack.textContent=t.back; storeCharactersTitle.textContent=t.storeCharacters; storeCharactersDesc.textContent=t.storeCharactersDesc; storeFutureTitle.textContent=t.storeItems; storeFutureDesc.textContent=t.storeItemsDesc; document.querySelectorAll('.store-coming').forEach(el=>el.textContent=t.comingSoon); updateSoulsUI();}
+
+function hideResultPanels(){lossPanel.classList.remove('show');winPanel.classList.remove('show');lossPanel.setAttribute('aria-hidden','true');winPanel.setAttribute('aria-hidden','true')}
+function hideStore(){storePanel.classList.remove('show');storePanel.setAttribute('aria-hidden','true')}
+function showStore(){if(playing)return;hideResultPanels();chapterPanel.classList.remove('show');mainPanel.style.display='none';storePanel.classList.add('show');storePanel.setAttribute('aria-hidden','false');applyLanguage()}
+
+function showMainMenu(){closeSettingsModal();mobileControls.classList.add('hidden');hideResultPanels();chapterPanel.classList.remove('show');hideStore();mainPanel.style.display='block';menuNotice.textContent='';applyLanguage();startMenuMusic()}
+function showLossScreen(){stopChapter1Music();stopBossMusic();stopMenuMusic();mobileControls.classList.add('hidden');mainPanel.style.display='none';chapterPanel.classList.remove('show');hideStore();winPanel.classList.remove('show');lossPanel.classList.add('show');lossPanel.setAttribute('aria-hidden','false');runScoreValue.textContent=String(Math.floor(score)).padStart(5,'0');allTimeValue.textContent=String(bestScore).padStart(5,'0');applyLanguage()}
+function showWinScreen(){stopChapter1Music();stopBossMusic();stopMenuMusic();mobileControls.classList.add('hidden');mainPanel.style.display='none';chapterPanel.classList.remove('show');hideStore();lossPanel.classList.remove('show');winPanel.classList.add('show');winPanel.setAttribute('aria-hidden','false');victoryScoreValue.textContent='1000';applyLanguage()}
+function showChapters(){if(playing)return;mainPanel.style.display='none';chapterPanel.classList.add('show');menuNotice.textContent='';applyLanguage()}
+accountBtn.addEventListener('click',openAccountModal);
+closeAccount.addEventListener('click',closeAccountModal);
+accountModal.addEventListener('click',e=>{if(e.target===accountModal)closeAccountModal()});
+accountLogin.addEventListener('click',loginAccount);
+accountRegister.addEventListener('click',registerAccount);
+accountLogout.addEventListener('click',logoutAccount);
+leaderboardBtn.addEventListener('click',openLeaderboard);
+closeLeaderboard.addEventListener('click',closeLeaderboardModal);
+leaderboardModal.addEventListener('click',e=>{if(e.target===leaderboardModal)closeLeaderboardModal()});
+leaderboardRefresh.addEventListener('click',refreshLeaderboard);
+if(supabaseClient){
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+    currentUser=session?.user||null;
+    if(currentUser)setTimeout(()=>loadCloudProfile(),0);
+    else{currentProfile=null;updateAccountUI();}
+  });
+}
+updateAccountUI();
+
+languageBtn.addEventListener('click',()=>{language=language==='en'?'ar':'en';localStorage.setItem('bleachDashLanguage',language);applyLanguage()});
+startBtn.addEventListener('click',showChapters);
+chapterBack.addEventListener('click',showMainMenu);
+chapter1Btn.addEventListener('click',()=>{chapterPanel.classList.remove('show');mainPanel.style.display='block';start(false)});
+endlessBtn.addEventListener('click',()=>start(true));
+lossRevive.addEventListener('click',reviveRun);
+lossTryAgain.addEventListener('click',()=>start(endlessMode));
+lossMainMenu.addEventListener('click',()=>{playing=false;showMainMenu();});
+winMainMenu.addEventListener('click',()=>{playing=false;showMainMenu();});
+controllerBtn.addEventListener('click',()=>{controlsModal.classList.remove('hidden')});
+closeControls.addEventListener('click',()=>{controlsModal.classList.add('hidden')});
+controlsModal.addEventListener('click',e=>{if(e.target===controlsModal)controlsModal.classList.add('hidden')});
+storeBtn.addEventListener('click',showStore);
+storeBack.addEventListener('click',showMainMenu);
+function updateControlModeUI(){
+  const buttons=controlMode==='buttons';
+  normalControlsOption.classList.toggle('selected',!buttons);
+  buttonControlsOption.classList.toggle('selected',buttons);
+  mobileControls.classList.toggle('hidden',!buttons);
+  mobileControls.setAttribute('aria-hidden',buttons?'false':'true');
+}
+function openSettings(){if(playing)return;settingsModal.classList.remove('hidden');settingsModal.setAttribute('aria-hidden','false');updateControlModeUI();applyAudioPrefs()}
+function closeSettingsModal(){settingsModal.classList.add('hidden');settingsModal.setAttribute('aria-hidden','true')}
+function setMusicVolume(v){audioPrefs.musicVolume=clampVolume(v);audioPrefs.musicMuted=false;saveAudioPrefs();applyAudioPrefs();startMenuMusic()}
+function setSfxVolume(v){audioPrefs.sfxVolume=clampVolume(v);audioPrefs.sfxMuted=false;saveAudioPrefs();applyAudioPrefs();initAudio()}
+function toggleMusicMute(){audioPrefs.musicMuted=!audioPrefs.musicMuted;saveAudioPrefs();applyAudioPrefs()}
+function toggleSfxMute(){audioPrefs.sfxMuted=!audioPrefs.sfxMuted;saveAudioPrefs();applyAudioPrefs();initAudio()}
+function setControlMode(mode){controlMode=mode==='buttons'?'buttons':'normal';localStorage.setItem('bleachDashControlMode',controlMode);updateControlModeUI();closeSettingsModal()}
+settingsBtn.addEventListener('click',openSettings);
+closeSettings.addEventListener('click',closeSettingsModal);
+settingsModal.addEventListener('click',e=>{if(e.target===settingsModal)closeSettingsModal()});
+normalControlsOption.addEventListener('click',()=>setControlMode('normal'));
+buttonControlsOption.addEventListener('click',()=>setControlMode('buttons'));
+musicVolume.addEventListener('input',e=>setMusicVolume(e.target.value));
+sfxVolume.addEventListener('input',e=>setSfxVolume(e.target.value));
+musicMuteBtn.addEventListener('click',toggleMusicMute);
+sfxMuteBtn.addEventListener('click',toggleSfxMute);
+applyAudioPrefs();
+updateControlModeUI();
+
+// Data-driven character system. Future characters can be added here without changing the menu layout.
+const CHARACTER_DEFS={
+  ichigo:{nameKey:'ichigo',frames:Array.from({length:8},(_,i)=>`assets/boss/ichigo_idle_${i+1}.png`),frameMs:115}
+};
+let selectedCharacter=localStorage.getItem('bleachDashCharacter')||'ichigo';
+let characterFrameIndex=0,characterFrameTimer=0,characterLastTime=performance.now();
+function setCharacter(id){
+  if(!CHARACTER_DEFS[id])return;
+  selectedCharacter=id; localStorage.setItem('bleachDashCharacter',id);
+  characterFrameIndex=0; characterFrameTimer=0;
+  const def=CHARACTER_DEFS[id];
+  characterDisplayImg.src=def.frames[0];
+  characterDisplayName.textContent=I18N[language][def.nameKey];
+  characterGrid.querySelectorAll('.character-option').forEach(el=>el.classList.toggle('selected',el.dataset.character===id));
+}
+function openCharacterSelect(){if(playing)return; characterModal.classList.add('show'); characterModal.setAttribute('aria-hidden','false'); setCharacter(selectedCharacter)}
+function closeCharacterSelect(){characterModal.classList.remove('show'); characterModal.setAttribute('aria-hidden','true')}
+characterSelectBtn.addEventListener('click',openCharacterSelect); characterDisplay.addEventListener('click',openCharacterSelect); characterDisplay.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openCharacterSelect()});
+characterClose.addEventListener('click',closeCharacterSelect);
+characterModal.addEventListener('click',e=>{if(e.target===characterModal)closeCharacterSelect()});
+characterGrid.addEventListener('click',e=>{const option=e.target.closest('.character-option[data-character]');if(!option||option.disabled)return;setCharacter(option.dataset.character);closeCharacterSelect()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeCharacterSelect()});
+function updateCharacterIdle(now){
+  if(characterModal.classList.contains('show')){characterLastTime=now;return;}
+  const def=CHARACTER_DEFS[selectedCharacter]||CHARACTER_DEFS.ichigo;
+  characterFrameTimer+=Math.min(50,now-characterLastTime); characterLastTime=now;
+  if(characterFrameTimer>=def.frameMs){characterFrameTimer=0;characterFrameIndex=(characterFrameIndex+1)%def.frames.length;characterDisplayImg.src=def.frames[characterFrameIndex]}
+}
+function characterIdleLoop(now){updateCharacterIdle(now);requestAnimationFrame(characterIdleLoop)}
+setCharacter(selectedCharacter); requestAnimationFrame(characterIdleLoop);
+applyLanguage();
+// Browser autoplay policies require a user gesture before music can begin.
+addEventListener('pointerdown',()=>{if(!playing && mainPanel.style.display!=='none')startMenuMusic()},{passive:true});
+addEventListener('keydown',()=>{if(!playing && mainPanel.style.display!=='none')startMenuMusic()},{passive:true});
+startMenuMusic();
+const enemySets={
+  small:{idle:hollowIdleFrames,death:hollowDeathFrames},
+  big:{idle:mediumHollowIdleFrames,death:[]},
+  hurdle:{idle:hurdleIdleFrames,death:hurdleDeathFrames}
+};
+function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false;worldScale=Math.max(.85,Math.min(1.6,Math.min(W/1100,H/520)));ground=H-90*worldScale;if(player&&!playing){player.w=72*worldScale;player.h=96*worldScale;player.x=75*worldScale;player.y=ground-player.h}}addEventListener('resize',resize);resize();
+function reset(){player={x:75*worldScale,y:ground-96*worldScale,w:72*worldScale,h:96*worldScale,vy:0,onGround:true,attack:false,attackTime:0,attackFired:false,slide:false,slideTime:0,invuln:0};obstacles=[];dyingObstacles=[];projectiles=[];bossProjectiles=[];particles=[];score=0;reviveUsed=false;soulPopups=[];speed=390;spawnTimer=1.35;gameTime=0;deathStart=0;bossMode=false;boss=null;bossVictory=false;bossDeathStart=0;bossCheatCount=0;bossCheatLast=0;secretCombo='';secretComboLast=0;lastObstacleType='';hardObstacleStreak=0;bossUI.classList.remove('active');bossFill.style.width='100%'}
+
+// Chapter 1 uses a gentle, progressive difficulty curve. The goal is to teach
+// the player first, then add variety, while keeping enough reaction time that
+// the run stays fun rather than punishing.
+function getDifficulty(){
+  if(endlessMode){
+    const t=Math.min(score/900,1);
+    return {speed:300+t*190,spawnMin:1.00-t*.12,spawnMax:1.42-t*.12,
+      weights:[['hurdle',.16],['small',.30],['big',.24],['large',.16],['flying',.10],['highFlying',.04]]};
+  }
+  const t=Math.min(score/1000,1);
+  let phase;
+  if(t<.15) phase={speed:300+t/.15*30,spawnMin:1.30,spawnMax:1.72,weights:[['hurdle',.32],['small',.68]]};
+  else if(t<.35) phase={speed:330+(t-.15)/.20*30,spawnMin:1.18,spawnMax:1.58,weights:[['hurdle',.25],['small',.50],['big',.25]]};
+  else if(t<.55) phase={speed:360+(t-.35)/.20*30,spawnMin:1.08,spawnMax:1.46,weights:[['hurdle',.20],['small',.40],['big',.28],['large',.12]]};
+  else if(t<.75) phase={speed:390+(t-.55)/.20*25,spawnMin:1.00,spawnMax:1.38,weights:[['hurdle',.18],['small',.34],['big',.28],['large',.12],['flying',.08]]};
+  else phase={speed:415+(t-.75)/.25*35,spawnMin:.96,spawnMax:1.32,weights:[['hurdle',.16],['small',.30],['big',.25],['large',.14],['flying',.10],['highFlying',.05]]};
+  return phase;
+}
+function chooseObstacleType(weights){
+  // Avoid stacking difficult obstacles back-to-back. This gives the player
+  // predictable recovery time after a large/flying obstacle.
+  let pool=weights.slice();
+  if(hardObstacleStreak>0)pool=pool.filter(([type])=>type==='small'||type==='hurdle'||type==='big');
+  if(!pool.length)pool=weights.slice(0,3);
+  const total=pool.reduce((sum,[,w])=>sum+w,0);let r=Math.random()*total;
+  for(const [type,w] of pool){r-=w;if(r<=0)return type;}
+  return pool[pool.length-1][0];
+}
+async function start(isEndless=false){
+  stopMenuMusic();
+  stopChapter1Music();
+  stopBossMusic();
+  initAudio();
+  sfxMenu();
+  endlessMode=!!isEndless;
+  reset();
+  hideResultPanels();
+  hideStore();
+  playing=true;
+  applyLanguage();
+  overlay.classList.add('hidden');
+  updateControlModeUI();
+  if(!endlessMode)startChapter1Music();
+  last=performance.now();
+  requestAnimationFrame(loop)
+}
+
+const SLIDE_DURATION=.56;
+const SLIDE_FRAME_W=124;
+const SLIDE_FRAME_H=124;
+const SLIDE_FRAME_COUNT=7;
+
+function startSlide(){
+  if(!playing || !player || player.slide || player.attack || !player.onGround)return;
+  player.slide=true;
+  player.slideTime=0;
+  player.vy=0;
+  player.y=ground-player.h;
+  initAudio();
+}
+
+function stopSlide(){
+  if(!player || !player.slide)return;
+  player.slide=false;
+  player.slideTime=0;
+  player.vy=0;
+  player.onGround=true;
+  player.y=ground-player.h;
+}
+
+function updateSlide(dt){
+  if(!player || !player.slide)return false;
+  player.slideTime+=dt;
+  player.vy=0;
+  player.onGround=true;
+  player.y=ground-player.h;
+  if(player.slideTime>=SLIDE_DURATION)stopSlide();
+  return true;
+}
+
+function jump(){if(!playing||player.attack||player.slide)return;if(player.onGround){initAudio();sfxJump();player.vy=-760;player.onGround=false;jumpTime=0;burst(player.x+35,ground,7)}}
+function beginAttack(){if(!playing||player.slide)return;if(!player.attack){initAudio();sfxGetsugaCharge();player.attack=true;player.attackTime=-0.10;player.attackFired=false}}
+function burst(x,y,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*180,vy:-Math.random()*180,life:.5+Math.random()*.35})}
+function spawn(){
+  const difficulty=getDifficulty();
+  const type=chooseObstacleType(difficulty.weights);
+  const defs={small:[64,64],big:[84,104],large:[156,145],hurdle:[104,72],flying:[88,66],highFlying:[176,120]};
+  let [w,h]=defs[type];
+  w*=worldScale;h*=worldScale;
+  const y=type==='flying' ? ground-122*worldScale : type==='highFlying' ? ground-235*worldScale : ground-h;
+  obstacles.push({type,x:W+35*worldScale,w,h,y,animTime:Math.random()*0.5,dead:false});
+  lastObstacleType=type;
+  hardObstacleStreak=(type==='large'||type==='flying'||type==='highFlying')?1:0;
+  spawnTimer=difficulty.spawnMin+Math.random()*(difficulty.spawnMax-difficulty.spawnMin);
+}
+function enterBoss(){if(bossMode)return;stopChapter1Music();bossMode=true;startBossMusic();obstacles=[];dyingObstacles=[];projectiles=[];bossProjectiles=[];boss={x:Math.max(W-420*worldScale,Math.min(W-320*worldScale,W*.64)),y:ground-360*worldScale,w:360*worldScale,h:360*worldScale,hp:20,maxHp:20,state:'idle',stateTime:0,cooldown:1.45,attackVariant:'ground',attackFired:false,dead:false};bossUI.classList.add('active');bossFill.style.width='100%'}function bossHitbox(){return{x:boss.x+boss.w*.22,y:boss.y+boss.h*.08,w:boss.w*.62,h:boss.h*.82}}function damageBoss(){if(!bossMode||!boss||boss.dead||boss.state!=='idle')return;boss.hp--;bossFill.style.width=(boss.hp/boss.maxHp*100)+'%';if(boss.hp<=0){boss.dead=true;boss.state='death';boss.stateTime=0;bossDeathStart=performance.now();bossProjectiles=[];return}boss.state='idle';boss.stateTime=0;boss.cooldown=.7+Math.random()*.35}function fireBossAttack(){boss.state='attack';boss.stateTime=0;boss.attackFired=false;boss.attackVariant=Math.random()<.5?'ground':'head'}function updateBoss(dt){if(!bossMode||!boss)return;boss.stateTime+=dt;if(boss.dead){if(boss.stateTime>1.95){stopChapter1Music();stopBossMusic();bossMode=false;bossVictory=true;bossUI.classList.remove('active');playing=false;overlay.classList.remove('hidden');showWinScreen()}return}if(boss.state==='attack'){if(!boss.attackFired&&boss.stateTime>.28){// Ground attack is low enough to be jumped; head attack is high enough to duck under.
+const y=boss.attackVariant==='ground'?ground-52*worldScale:ground-112*worldScale;
+const h=32*worldScale;
+bossProjectiles.push({x:boss.x+8*worldScale,y,w:78*worldScale,h,vx:-Math.max(470*worldScale,speed*.9),life:2.3,frameTime:0,variant:'grandProjectile',attackVariant:boss.attackVariant});boss.attackFired=true}if(boss.stateTime>.72){boss.state='idle';boss.stateTime=0;boss.cooldown=1.1+Math.random()*.55}}else{boss.cooldown-=dt;if(boss.cooldown<=0)fireBossAttack()}for(const q of bossProjectiles){q.x+=q.vx*dt;q.life-=dt;q.frameTime=(q.frameTime||0)+dt;if(player.invuln<=0&&rectsOverlap(playerHitbox(),q)){gameOver();return}}bossProjectiles=bossProjectiles.filter(q=>q.life>0&&q.x+q.w>-100)}
+function update(dt){
+  updateSlide(dt);
+  if(player.invuln>0)player.invuln=Math.max(0,player.invuln-dt);
+  gameTime+=dt;if(!bossMode){score+=dt*10;speed+=dt*2.4;}scoreEl.textContent=String(Math.floor(score)).padStart(5,'0');if(!endlessMode&&!bossMode&&score>=1000)enterBoss();
+  if(player.attack){
+    player.attackTime+=dt;
+    // Boss-fight Ichigo uses two independent animations: a 7-frame body/sword
+    // sequence and a separate 10-frame Getsuga projectile launched at release.
+    if(!player.attackFired&&player.attackTime>=.40){spawnGetsuga();sfxGetsugaLaunch();player.attackFired=true}
+    if(player.attackTime>=.70){player.attack=false;player.attackTime=0;player.attackFired=false}
+  }
+  updateProjectiles(dt);
+  if(!player.slide){player.vy+=1900*dt;player.y+=player.vy*dt;}
+  if(!player.onGround)jumpTime+=dt;
+  if(player.y+player.h>=ground){player.y=ground-player.h;player.vy=0;player.onGround=true;jumpTime=0}
+  if(!bossMode){spawnTimer-=dt;if(spawnTimer<=0)spawn();}
+  for(const o of obstacles){o.x-=speed*dt;o.animTime+=dt}
+  for(const d of dyingObstacles){d.x-=speed*dt;d.age+=dt}
+  handleCollisions();if(bossMode)updateBoss(dt);
+  obstacles=obstacles.filter(o=>o.x+o.w>-100&&!o.dead);
+  dyingObstacles=dyingObstacles.filter(d=>d.age<d.duration&&d.x+d.w>-220);
+  for(const p of soulPopups){p.x-=speed*dt;p.age+=dt;} soulPopups=soulPopups.filter(p=>p.age<p.life);
+  for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.life-=dt}
+  particles=particles.filter(p=>p.life>0);
+}
+function spawnGetsuga(){
+  const x=player.x+58*worldScale, y=player.y+25*worldScale;
+  if(bossMode){
+    // Player-fired Getsuga stays in the normal player projectile pipeline so
+    // it can damage Grand Fisher without being treated as a boss projectile.
+    projectiles.push({x:player.x+78*worldScale,y:player.y+64*worldScale,vx:Math.max(650*worldScale,speed*1.45),life:1.35,frameTime:0,variant:'getsuga',hit:false});
+    return;
+  }
+  projectiles.push({x,y,w:44*worldScale,h:58*worldScale,vx:Math.max(720*worldScale,speed*1.8),life:1.25,hit:false});
+}
+function getsugaFrameIndex(p){return Math.min(9,Math.floor((p.frameTime||0)/.055));}
+function getsugaFrameBox(p){
+  const img=bossGetsugaFrames[getsugaFrameIndex(p)];
+  if(!img||!img.naturalWidth||!img.naturalHeight)return null;
+  const scale=.42*worldScale;
+  return {img,w:img.naturalWidth*scale,h:img.naturalHeight*scale,x:p.x,y:p.y-(img.naturalHeight*scale)/2};
+}
+function updateProjectiles(dt){
+  for(const p of projectiles){
+    p.x+=p.vx*dt; p.life-=dt; p.frameTime=(p.frameTime||0)+dt;
+    const gb=p.variant==='getsuga'?getsugaFrameBox(p):null;
+    const hitBox=gb?{x:gb.x,y:gb.y,w:gb.w,h:gb.h}:{x:p.x,y:p.y,w:p.w,h:p.h};
+    if(bossMode&&boss&&!boss.dead&&rectsOverlap(hitBox,bossHitbox())){damageBoss();p.hit=true;continue;}
+    for(const o of obstacles){
+      if(o.dead)continue;
+      // Preserve the original enemy rules: Getsuga can destroy only small Hollows and hurdles.
+      // Medium/large/flying Hollows remain immune and must still be avoided.
+      if((o.type==='small'||o.type==='hurdle') && rectsOverlap(hitBox,obstacleHitbox(o))){
+        startEnemyDeath(o); o.dead=true; p.hit=true;
+        if(o.type==='hurdle') sfxHurdleBreak();
+        else { sfxImpact(); awardSoulFor(o); }
+        burst(o.x+o.w/2,ground-o.h/2,10); break;
+      }
+    }
+  }
+  projectiles=projectiles.filter(p=>!p.hit&&p.life>0&&p.x<W+180);
+}
+function drawGetsuga(p){
+  // Boss-fight Getsuga is a separate 10-frame transparent projectile animation.
+  if(p.variant==='getsuga'){
+    const gb=getsugaFrameBox(p);
+    if(!gb||!gb.img.complete||!gb.img.naturalWidth)return;
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(gb.img,gb.x,gb.y,gb.w,gb.h);
+    ctx.restore();
+    return;
+  }
+  const cx=Math.round(p.x+p.w*.15), cy=Math.round(p.y+p.h*.5), s=worldScale;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.fillStyle='#55bfff';
+  ctx.beginPath();
+  ctx.moveTo(cx-12*s,cy-24*s);ctx.lineTo(cx+4*s,cy-28*s);ctx.lineTo(cx+20*s,cy-18*s);ctx.lineTo(cx+30*s,cy-4*s);
+  ctx.lineTo(cx+36*s,cy+10*s);ctx.lineTo(cx+28*s,cy+22*s);ctx.lineTo(cx+14*s,cy+30*s);ctx.lineTo(cx-4*s,cy+28*s);
+  ctx.lineTo(cx+8*s,cy+16*s);ctx.lineTo(cx+18*s,cy+4*s);ctx.lineTo(cx+20*s,cy-8*s);ctx.lineTo(cx+12*s,cy-18*s);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#d9f4ff';
+  ctx.beginPath();
+  ctx.moveTo(cx-4*s,cy-18*s);ctx.lineTo(cx+8*s,cy-20*s);ctx.lineTo(cx+18*s,cy-10*s);ctx.lineTo(cx+22*s,cy);
+  ctx.lineTo(cx+14*s,cy+12*s);ctx.lineTo(cx+4*s,cy+18*s);ctx.lineTo(cx+12*s,cy+4*s);ctx.lineTo(cx+12*s,cy-7*s);ctx.closePath();ctx.fill();
+  ctx.globalAlpha=.65;ctx.fillStyle='#0b75ff';
+  ctx.fillRect(cx-10*s,cy-28*s,8*s,5*s);ctx.fillRect(cx+20*s,cy-16*s,9*s,5*s);ctx.fillRect(cx+27*s,cy+18*s,8*s,5*s);ctx.fillRect(cx-2*s,cy+25*s,10*s,5*s);
+  ctx.restore();
+}
+function getsugaFrameIndex(p){return Math.min(9,Math.floor((p.frameTime||0)/.055));}
+function getsugaFrameBox(p){
+  const img=bossGetsugaFrames[getsugaFrameIndex(p)];
+  if(!img||!img.naturalWidth||!img.naturalHeight)return null;
+  const scale=.42*worldScale;
+  return {img,w:img.naturalWidth*scale,h:img.naturalHeight*scale,x:p.x,y:p.y-(img.naturalHeight*scale)/2};
+}
+function updateProjectiles(dt){
+  for(const p of projectiles){
+    p.x+=p.vx*dt; p.life-=dt; p.frameTime=(p.frameTime||0)+dt;
+    const gb=p.variant==='getsuga'?getsugaFrameBox(p):null;
+    const hitBox=gb?{x:gb.x,y:gb.y,w:gb.w,h:gb.h}:{x:p.x,y:p.y,w:p.w,h:p.h};
+    if(bossMode&&boss&&!boss.dead&&rectsOverlap(hitBox,bossHitbox())){damageBoss();p.hit=true;continue;}
+    for(const o of obstacles){
+      if(o.dead)continue;
+      // Preserve the original enemy rules: Getsuga can destroy only small Hollows and hurdles.
+      // Medium/large/flying Hollows remain immune and must still be avoided.
+      if((o.type==='small'||o.type==='hurdle') && rectsOverlap(hitBox,obstacleHitbox(o))){
+        startEnemyDeath(o); o.dead=true; p.hit=true;
+        if(o.type==='hurdle') sfxHurdleBreak();
+        else { sfxImpact(); awardSoulFor(o); }
+        burst(o.x+o.w/2,ground-o.h/2,10); break;
+      }
+    }
+  }
+  projectiles=projectiles.filter(p=>!p.hit&&p.life>0&&p.x<W+180);
+}
+// Souls are awarded only for the small Hollows that were already killable.
+const SOUL_REWARDS={small:5};
+function awardSoulFor(o){const amount=SOUL_REWARDS[o.type]||0;if(!amount)return;souls+=amount;localStorage.setItem('bleachDashSouls',String(souls));syncPlayerState();soulPopups.push({x:o.x+o.w*.5,y:(o.y??ground-o.h)-8*worldScale,amount,age:0,life:.9});updateSoulsUI()}
+function drawSoulPopups(){for(const p of soulPopups){const t=Math.min(1,p.age/p.life);ctx.save();ctx.globalAlpha=1-t;const rise=24*t;const font=language==='ar'?'bold 14px "Arapix"':'bold 14px monospace';ctx.font=font;ctx.textAlign='center';ctx.textBaseline='middle';const label=language==='ar'?`+${p.amount} أرواح`:`+${p.amount} SOULS`;const tw=ctx.measureText(label).width;const iconSize=18*worldScale;const total=tw+iconSize+5*worldScale;const ix=p.x-total/2;const iy=p.y-rise-iconSize/2;if(soulsIconImg.complete&&soulsIconImg.naturalWidth){ctx.drawImage(soulsIconImg,ix,iy,iconSize,iconSize)}ctx.fillStyle='#dff7ff';ctx.shadowColor='#00142c';ctx.shadowBlur=5;ctx.fillText(label,ix+iconSize+5*worldScale+tw/2,iy+iconSize/2);ctx.restore()}}
+function startEnemyDeath(o){
+  const duration=o.type==='hurdle' ? .42 : (o.type==='flying' ? .42 : .28);
+  dyingObstacles.push({type:o.type,x:o.x,y:o.y??ground-o.h,w:o.w,h:o.h,age:0,duration});
+}
+function rectsOverlap(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function playerHitbox(){
+  if(player.slide){
+    // Matches the visible low body of the slide sprite while remaining forgiving.
+    return{
+      x:player.x+10*worldScale,
+      y:ground-43*worldScale,
+      w:Math.max(1,player.w-20*worldScale),
+      h:35*worldScale
+    };
+  }
+  if(!player.onGround)return{x:player.x+17,y:player.y+13,w:player.w-34,h:player.h-26};
+  return{x:player.x+16,y:player.y+10,w:player.w-32,h:player.h-14};
+}
+function obstacleHitbox(o){
+  const base=ground;
+  switch(o.type){
+    case 'small':return{x:o.x+8,y:base-o.h+8,w:o.w-16,h:o.h-8};
+    case 'big':return{x:o.x+o.w*0.28,y:base-o.h+o.h*0.30,w:o.w*0.44,h:o.h*0.48};
+    case 'large':return{x:o.x+o.w*0.08,y:base-o.h+o.h*0.06,w:o.w*0.44,h:Math.max(1,o.h-55*worldScale)};
+    case 'flying':return{x:o.x+8*worldScale,y:o.y+7*worldScale,w:o.w-16*worldScale,h:o.h-10*worldScale};
+    case 'highFlying':return{x:o.x+12*worldScale,y:o.y+14*worldScale,w:o.w-24*worldScale,h:o.h-34*worldScale};
+    case 'hurdle':return{x:o.x+7,y:base-o.h+9,w:o.w-14,h:o.h-9};
+  }
+}
+function handleCollisions(){
+  if(player.invuln>0)return;
+  const p=playerHitbox();
+  for(const o of obstacles){
+    if(o.dead)continue;
+    const hit=rectsOverlap(p,obstacleHitbox(o));
+    if(!hit)continue;
+    gameOver();return;
+  }
+}
+function loop(t){if(!playing)return;const dt=Math.min(.032,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)}
+function reviveRun(){if(reviveUsed||souls<REVIVE_COST)return;reviveUsed=true;souls-=REVIVE_COST;localStorage.setItem('bleachDashSouls',String(souls));syncPlayerState();player.x=75*worldScale;player.y=ground-player.h;player.vy=0;player.onGround=true;player.attack=false;player.slide=false;obstacles=[];dyingObstacles=[];projectiles=[];bossProjectiles=[];soulPopups=[];spawnTimer=.8;player.invuln=1.5;hideResultPanels();overlay.classList.add('hidden');bossUI.classList.toggle('active',!!bossMode);playing=true;
+if(!bossMode&&!endlessMode)startChapter1LoopMusic();
+last=performance.now();updateSoulsUI();requestAnimationFrame(loop)}
+function gameOver(){if(!playing)return;playing=false;stopChapter1Music();stopBossMusic();bossUI.classList.toggle('active',!!bossMode);initAudio();sfxGameOver();if(Math.floor(score)>bestScore){bestScore=Math.floor(score);localStorage.setItem('bleachDashBest',String(bestScore));syncPlayerState();applyLanguage()}deathStart=performance.now();requestAnimationFrame(deathLoop)}
+function deathLoop(t){draw(true);if(t-deathStart<900)requestAnimationFrame(deathLoop);else{overlay.classList.remove('hidden');showLossScreen();}}
+function drawCover(img,alpha=1){if(!img.complete||!img.naturalWidth)return;const targetH=ground+8,scale=Math.max(W/img.naturalWidth,targetH/img.naturalHeight),dw=img.naturalWidth*scale,dh=img.naturalHeight*scale,pan=Math.sin(gameTime*.035)*Math.max(0,dw-W)*.16;ctx.globalAlpha=alpha;ctx.drawImage(img,(W-dw)/2+pan,(targetH-dh)/2,dw,dh);ctx.globalAlpha=1}
+function drawBackground(){ctx.fillStyle='#07080b';ctx.fillRect(0,0,W,H);const phase=gameTime%72;let a,b,t;if(phase<28){a=backgrounds.day;b=backgrounds.evening;t=Math.max(0,(phase-20)/8)}else if(phase<56){a=backgrounds.evening;b=backgrounds.night;t=Math.max(0,(phase-48)/8)}else{a=backgrounds.night;b=backgrounds.day;t=Math.max(0,(phase-64)/8)}drawCover(a);if(t>0)drawCover(b,t)}
+function draw(deathMode=false){
+  ctx.clearRect(0,0,W,H);drawBackground();
+  ctx.fillStyle='#e8e3d7';ctx.fillRect(0,ground,W,3);ctx.fillStyle='#20232b';ctx.fillRect(0,ground+3,W,H-ground-3);
+  ctx.strokeStyle='#444752';ctx.lineWidth=2;for(let x=-(score*12%80);x<W;x+=80){ctx.beginPath();ctx.moveTo(x,ground+27);ctx.lineTo(x+35,ground+27);ctx.stroke()}
+  for(const p of particles){ctx.globalAlpha=Math.max(0,p.life*2);ctx.fillStyle='#f06a18';ctx.fillRect(p.x,p.y,3,3)}ctx.globalAlpha=1;
+  for(const o of obstacles)drawObstacle(o);for(const d of dyingObstacles)drawEnemyDeath(d);for(const p of projectiles)drawGetsuga(p);for(const p of bossProjectiles)drawBossProjectile(p);if(bossMode&&boss)drawBoss();if(deathMode)drawPlayer(true);else drawPlayer();drawSoulPopups();
+}
+function fitImage(img,x,y,w,h,flip=false,anchorBottom=true){
+  if(!img||!img.complete||!img.naturalWidth)return;
+  const scale=Math.min(w/img.naturalWidth,h/img.naturalHeight);
+  const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
+  const dx=x+(w-dw)/2,dy=anchorBottom?y+(h-dh):y+(h-dh)/2;
+  ctx.save();
+  if(flip){ctx.translate(dx+dw,0);ctx.scale(-1,1);ctx.drawImage(img,0,dy,dw,dh)}
+  else ctx.drawImage(img,dx,dy,dw,dh);
+  ctx.restore();
+}
+function currentFrame(list,time,ms){if(!list.length)return null;return list[Math.floor(time*1000/ms)%list.length]}
+function drawObstacle(o){
+  if(o.type==='hurdle'){
+    const img=currentFrame(hurdleIdleFrames,o.animTime,105);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  if(o.type==='small'){
+    const img=currentFrame(hollowIdleFrames,o.animTime,115);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  if(o.type==='big'){
+    const img=currentFrame(mediumHollowIdleFrames,o.animTime,135);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  if(o.type==='large'){
+    const img=currentFrame(largeHollowIdleFrames,o.animTime,105);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  if(o.type==='flying'){
+    const img=currentFrame(flyingHollowIdleFrames,o.animTime,90);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  if(o.type==='highFlying'){
+    const img=currentFrame(highFlyingHollowIdleFrames,o.animTime,105);
+    fitImage(img,o.x,o.y,o.w,o.h,false,true);
+    return;
+  }
+  drawPlaceholder(o.x,o.y,o.w,o.h,o.type);
+}
+function drawPlaceholder(x,y,w,h,type='small',alpha=1,scale=1){
+  const dw=w*scale,dh=h*scale;
+  const dx=x+(w-dw)/2,dy=y+h-dh;
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.fillStyle='#0b0c10';
+  ctx.beginPath();
+  ctx.moveTo(dx+dw/2,dy);
+  ctx.lineTo(dx+dw,dy+Math.min(18,dh*.28));
+  ctx.lineTo(dx+dw-6*scale,dy+dh);
+  ctx.lineTo(dx+6*scale,dy+dh);
+  ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#e6e0d4';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#e6e0d4';ctx.beginPath();ctx.arc(dx+dw*.35,dy+Math.min(19,dh*.29),4*scale,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#f06a18';ctx.beginPath();ctx.arc(dx+dw*.67,dy+Math.min(19,dh*.29),4*scale,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#f06a18';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(dx+5*scale,dy+Math.min(32,dh*.5));ctx.lineTo(dx+dw-5*scale,dy+Math.min(32,dh*.5));ctx.stroke();
+  ctx.restore();
+}
+function drawEnemyDeath(d){
+  const t=Math.min(1,d.age/d.duration);
+  if(d.type==='hurdle'){
+    const img=currentFrame(hurdleDeathFrames,d.age,80);
+    fitImage(img,d.x,d.y,d.w,d.h,false,true);
+    return;
+  }
+  if(d.type==='small'){
+    const img=currentFrame(hollowDeathFrames,d.age,70);
+    fitImage(img,d.x,d.y,d.w,d.h,false,true);
+    return;
+  }
+  if(d.type==='flying'){
+    const img=currentFrame(flyingHollowDeathFrames,d.age,70);
+    fitImage(img,d.x,d.y,d.w,d.h,false,true);
+    return;
+  }
+  drawPlaceholder(d.x,d.y,d.w,d.h,d.type,1-t,1-.18*t);
+}
+function drawIchigoAtlas(anim,index,x,y,w=124*worldScale,h=124*worldScale){
+  const f=atlasFrames[anim]?.[Math.max(0,Math.min(atlasFrames[anim].length-1,index))];
+  if(!f || !ichigoAtlas.complete || !ichigoAtlas.naturalWidth)return;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(ichigoAtlas,f.x,f.y,f.w,f.h,x,y,w,h);
+}
+function drawRunFrame(index){
+  // Reverted to the original 20-frame Ichigo running animation in the master atlas.
+  // The separate replacement run PNG sequence is intentionally not loaded or used.
+  const count=atlasFrames.run.length;
+  if(!count)return;
+  const frame=((Math.floor(index)%count)+count)%count;
+  const sx=player.x-26*worldScale;
+  const sy=player.y+player.h-124*worldScale;
+  drawIchigoAtlas('run',frame,sx,sy,124*worldScale,124*worldScale);
+}
+function drawBossProjectile(p){
+  if(p.variant==='grandProjectile'){
+    const idx=Math.min(bossGrandProjectileFrames.length-1,Math.floor((p.frameTime||0)/.075));
+    const img=bossGrandProjectileFrames[idx];
+    if(!img||!img.complete||!img.naturalWidth)return;
+    const targetH=72*worldScale;
+    const scale=targetH/img.naturalHeight;
+    const dw=img.naturalWidth*scale,dh=targetH;
+    const drawX=p.x,drawY=p.y+p.h*.5-dh*.5;
+    ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(img,drawX,drawY,dw,dh);ctx.restore();
+    return;
+  }
+  ctx.save();const s=worldScale,cx=p.x+p.w*.5,cy=p.y+p.h*.5;ctx.fillStyle=p.variant==='ground'?'#ff6a3d':'#ff304f';ctx.shadowColor='#ff203f';ctx.shadowBlur=12*s;ctx.beginPath();ctx.ellipse(cx,cy,p.w*.48,p.h*.48,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd6c9';ctx.beginPath();ctx.ellipse(cx+p.w*.15,cy,p.w*.18,p.h*.28,0,0,Math.PI*2);ctx.fill();ctx.restore()
+}
+function drawSheetFrame(img,f,x,y,w,h){
+  if(!img.complete||!img.naturalWidth)return;
+  ctx.imageSmoothingEnabled=false;
+  const sc=Math.min(w/f.w,h/f.h),dw=f.w*sc,dh=f.h*sc,dx=x+(w-dw)/2,dy=y+(h-dh);
+  ctx.drawImage(img,f.x,f.y,f.w,f.h,dx,dy,dw,dh);
+}
+
+// Grand Fisher death frames use the same 384x512 source canvas, but their
+// artwork fills much more of that canvas than the idle/attack sprites. Draw
+// the death sequence inside a smaller, aspect-preserving box so the visible
+// character stays at the same apparent size as the normal boss animations.
+// The visible bottom is aligned to the shared ground line, so every frame
+// stays planted without relying on hand-tuned offsets.
+const GRAND_DEATH_SCALE=0.72;
+const bossGrandDeathAlphaBounds=[
+  [26,35,380,501],[30,33,384,509],[0,78,384,512],[0,80,384,512],
+  [0,92,384,512],[0,8,375,512],[12,41,384,495],[0,138,384,492],
+  [0,0,384,492],[0, 187, 384, 512],[0, 165, 384, 498],[0, 175, 384, 509],
+  [1,193,384,454],[0,58,384,463],[0,60,384,464],[0,57,384,472],
+  [0,117,384,478],[0,0,381,478]
+];
+function drawBoss(){
+  if(boss.state==='death'){
+    const idx=Math.min(bossGrandDeathFrames.length-1,Math.floor(boss.stateTime*1000/105));
+    const img=bossGrandDeathFrames[idx];
+    if(!img||!img.complete||!img.naturalWidth)return;
+    ctx.imageSmoothingEnabled=false;
+    const sc=(boss.h/512)*GRAND_DEATH_SCALE;
+    const dw=boss.w*GRAND_DEATH_SCALE;
+    const dh=boss.h*GRAND_DEATH_SCALE;
+    const [, , , ey]=bossGrandDeathAlphaBounds[idx];
+    // Center the reduced frame horizontally, then place its visible bottom
+    // exactly on the game's ground line. Transparent padding is preserved.
+    const dx=boss.x+(boss.w-dw)/2;
+    const visibleBottom=ey*sc;
+    const dy=ground-visibleBottom;
+    ctx.drawImage(img,dx,dy,dw,dh);
+    return;
+  }
+  const frames=boss.state==='idle'?bossGrandIdleFrames:bossGrandAttackFrames;
+  const img=boss.state==='idle'?bossSheets.grandIdle:bossSheets.grandAttack;
+  if(!frames.length)return;
+  const ms=boss.state==='idle'?110:70;
+  const idx=Math.min(frames.length-1,Math.floor(boss.stateTime*1000/ms));
+  drawSheetFrame(img,frames[idx],boss.x,boss.y,boss.w,boss.h);
+}
+const BOSS_ICHIGO_HEIGHT=120;
+const BOSS_ICHIGO_IDLE_HEIGHT=96;
+// BOSS ICHIGO DUCK — 11 independent RGBA frames.
+// Source frames are fixed at 512px high with variable widths, so no frame
+// can bleed into its neighbor. The visible bottom is aligned to the ground.
+const ICHIGO_DUCK_BOTTOMS=[499,500,500,509,504,485,487,487,479,479,479];
+function drawBossIchigoDuckImage(img,frameIndex,baseX,baseY,targetHeight){
+  if(!img||!img.complete||!img.naturalWidth)return;
+  const h=targetHeight*worldScale;
+  const scale=h/512;
+  const w=img.naturalWidth*scale;
+  const bottom=(ICHIGO_DUCK_BOTTOMS[frameIndex]??511)*scale;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(img,baseX-w*.5,baseY-bottom,w,h);
+}
+function drawBossIchigoImage(img,baseX,baseY,targetHeight){
+  if(!img||!img.complete||!img.naturalWidth)return;
+  const h=targetHeight*worldScale;
+  const w=img.naturalWidth*(h/img.naturalHeight);
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(img,baseX-w*.5,baseY-h,w,h);
+}
+// BOSS ICHIGO JUMP — 9 independent RGBA frames.
+// Each source frame is exactly 512px high; width is frame-specific. The
+// visible Ichigo artwork is normalized to a consistent 355px source height,
+// while the original jump trajectory/bottom positions are preserved.
+const ICHIGO_JUMP_BOTTOMS=[512,512,496,416,403,454,471,472,474];
+function drawBossIchigoJumpImage(img,frameIndex,baseX,baseY,targetHeight){
+  if(!img||!img.complete||!img.naturalWidth)return;
+  const h=targetHeight*worldScale;
+  const scale=h/512;
+  const w=img.naturalWidth*scale;
+  const bottom=(ICHIGO_JUMP_BOTTOMS[frameIndex]??511)*scale;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(img,baseX-w*.5,baseY-bottom,w,h);
+}
+// ICHIGO BODY ATTACK — 7 independent RGBA frames.
+// Source layout: frames 1–4 are 384x512; frames 5–7 are 512x512.
+// The frame canvas is never cropped or sampled as a sprite sheet.
+const ICHIGO_ATTACK_VISIBLE_BOUNDS=[
+  [23,75,342,512], [32,209,377,512], [33,58,372,512], [42,35,372,512],
+  [12,0,512,436], [0,0,512,431], [0,0,512,429]
+];
+function drawBossIchigoAttackImage(img,frameIndex,baseX,baseY,targetHeight){
+  // Never make Ichigo disappear if one frame is still loading: hold the last
+  // available attack frame until the requested new frame has decoded.
+  if(!img||!img.complete||!img.naturalWidth){
+    for(let j=frameIndex-1;j>=0;j--){const fallback=bossIchigoAttackFrames[j];if(fallback&&fallback.complete&&fallback.naturalWidth){img=fallback;frameIndex=j;break;}}
+    if(!img||!img.complete||!img.naturalWidth)return;
+  }
+  const h=targetHeight*worldScale;
+  const scale=h/img.naturalHeight;
+  const w=img.naturalWidth*scale;
+  const b=ICHIGO_ATTACK_VISIBLE_BOUNDS[frameIndex]||[0,0,img.naturalWidth,img.naturalHeight];
+  ctx.imageSmoothingEnabled=false;
+  // Full frame is drawn; only the visible alpha bottom is used for ground alignment.
+  ctx.drawImage(img,baseX-w*.5,baseY-b[3]*scale,w,h);
+}
+function drawBossIchigo(){
+  const baseX=player.x+36*worldScale;
+  const baseY=player.y+player.h;
+  if(player.slide){
+    const idx=Math.min(bossIchigoDuckFrames.length-1,Math.floor((player.slideTime/SLIDE_DURATION)*bossIchigoDuckFrames.length));
+    drawBossIchigoDuckImage(bossIchigoDuckFrames[idx],idx,baseX,baseY,96);
+    return;
+  }
+  if(player.attack){
+    const idx=Math.min(6,Math.floor(Math.max(0,player.attackTime)/.70*7));
+    drawBossIchigoAttackImage(bossIchigoAttackFrames[idx],idx,baseX,baseY,120);
+    return;
+  }
+  if(!player.onGround){
+    // Use the dedicated 9-frame boss jump animation. The physics/controller
+    // remain unchanged; only the rendered artwork is replaced.
+    const jumpDuration=(2*760)/1900;
+    const progress=Math.max(0,Math.min(.999,jumpTime/jumpDuration));
+    const idx=Math.min(8,Math.floor(progress*9));
+    const img=bossIchigoJumpFrames[idx];
+    drawBossIchigoJumpImage(img,idx,baseX,baseY,BOSS_ICHIGO_HEIGHT);
+    return;
+  }
+  const idx=Math.floor(performance.now()/130)%bossIchigoIdleFrames.length;
+  drawBossIchigoImage(bossIchigoIdleFrames[idx],baseX,baseY,BOSS_ICHIGO_IDLE_HEIGHT);
+}
+function drawPlayer(deathMode=false){
+  if(bossMode&&!deathMode){drawBossIchigo();return;}
+  const sw=124*worldScale,sh=124*worldScale;
+  const bottom=player.y+player.h;
+  const sx=player.x-26*worldScale, sy=bottom-sh;
+  if(deathMode){
+    drawIchigoAtlas('death',Math.min(9,Math.floor((performance.now()-deathStart)/90)),sx,sy,sw,sh);
+  }else if(player.slide){
+    if(slideSheet.complete&&slideSheet.naturalWidth){
+      const frame=Math.min(
+        SLIDE_FRAME_COUNT-1,
+        Math.floor((player.slideTime/SLIDE_DURATION)*SLIDE_FRAME_COUNT)
+      );
+      ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(
+        slideSheet,
+        frame*SLIDE_FRAME_W,0,SLIDE_FRAME_W,SLIDE_FRAME_H,
+        sx,sy,sw,sh
+      );
+    }
+  }else if(player.attack){
+    // Briefly preserve the run cycle, then play six complete, self-contained
+    // Getsuga frames. Each frame is a separate transparent PNG: no sprite-sheet
+    // neighbors, labels, or external projectile can leak into the animation.
+    if(player.attackTime<0){
+      drawRunFrame(Math.floor(performance.now()/43));
+    }else{
+      const img=attackFrames[Math.min(5,Math.floor((player.attackTime/.60)*6))];
+      if(img&&img.complete&&img.naturalWidth){
+        const aw=124*worldScale,ah=124*worldScale;
+        const ax=player.x-26*worldScale, ay=player.y+player.h-ah;
+        ctx.imageSmoothingEnabled=false;
+        ctx.drawImage(img,ax,ay,aw,ah);
+      }
+    }
+  }else if(player.onGround){
+    drawRunFrame(Math.floor(performance.now()/43));
+  }else{
+    const jumpDuration=(2*760)/1900;
+    const progress=Math.max(0,Math.min(.999,jumpTime/jumpDuration));
+    drawIchigoAtlas('jump',Math.min(9,Math.floor(progress*10)),sx,sy,sw,sh);
+  }
+}
+
+let touchDownAt=0,touchTimer=null,lastTapAt=0,touchDidAction=false;function pointerDown(e){if(!playing)return;e.preventDefault();const now=performance.now();touchDownAt=now;touchDidAction=false;if(now-lastTapAt<300){beginAttack();touchDidAction=true;clearTimeout(touchTimer);return}touchTimer=setTimeout(()=>{if(playing&&performance.now()-touchDownAt>=160){startSlide();touchDidAction=true}},160)}function pointerUp(e){if(!playing)return;e.preventDefault();clearTimeout(touchTimer);if(player&&player.slide){stopSlide();touchDidAction=true;return}const now=performance.now();if(!touchDidAction&&now-touchDownAt<160){jump();lastTapAt=now}else if(touchDidAction){lastTapAt=now}}
+canvas.addEventListener('pointerdown',pointerDown,{passive:false});canvas.addEventListener('pointerup',pointerUp,{passive:false});canvas.addEventListener('pointercancel',pointerUp,{passive:false});
+function bindMobileButton(btn,action){
+  const down=e=>{e.preventDefault();e.stopPropagation();action()};
+  btn.addEventListener('pointerdown',down,{passive:false});
+}
+bindMobileButton(mobileJump,()=>jump());
+bindMobileButton(mobileAttack,()=>beginAttack());
+bindMobileButton(mobileSlide,()=>startSlide());
+addEventListener('keydown',e=>{
+  if(e.repeat)return;
+
+  // Never let gameplay shortcuts/cheat codes intercept text-entry fields.
+  // This is important for login/signup forms (e.g. the letter M must type normally).
+  const typingTarget=e.target;
+  const isTypingTarget=typingTarget && (typingTarget.tagName==='INPUT' || typingTarget.tagName==='TEXTAREA' || typingTarget.tagName==='SELECT' || typingTarget.isContentEditable);
+  if(isTypingTarget)return;
+
+  // Secret Grand Fisher death-animation test combo: type "qais".
+  // If the boss is not active yet, enter the boss fight first, then trigger its normal death state.
+  if(e.key && e.key.length===1){
+    const now=performance.now();
+    if(now-secretComboLast>1400)secretCombo='';
+    secretComboLast=now;
+    secretCombo+=e.key.toLowerCase();
+    if(secretCombo.length>4)secretCombo=secretCombo.slice(-4);
+    if(secretCombo==='qais' && playing){
+      e.preventDefault();
+      secretCombo='';
+      secretComboLast=0;
+      if(!bossMode)enterBoss();
+      if(boss&&!boss.dead){
+        boss.hp=0;
+        bossFill.style.width='0%';
+        boss.dead=true;
+        boss.state='death';
+        boss.stateTime=0;
+        bossDeathStart=performance.now();
+        bossProjectiles=[];
+      }
+      return;
+    }
+  }
+
+  // Boss test cheat: press M three times quickly during a run to enter Grand Fisher immediately.
+  if(e.code==='KeyM'){
+    e.preventDefault();
+    if(!playing)return;
+    const now=performance.now();
+    bossCheatCount=(now-bossCheatLast<=900)?bossCheatCount+1:1;
+    bossCheatLast=now;
+    if(bossCheatCount>=3){
+      bossCheatCount=0;
+      bossCheatLast=0;
+      score=Math.max(score,1000);
+      if(!bossMode)enterBoss();
+    }
+    return;
+  }
+  if(e.code==='ArrowDown'){
+    e.preventDefault();
+    startSlide();
+  }else if(['Space','ArrowUp'].includes(e.code)){
+    e.preventDefault();
+    jump();
+  }else if(['KeyX','KeyZ'].includes(e.code)){
+    e.preventDefault();
+    beginAttack();
+  }
+},{passive:false});
+// Touch/click attack button is not present in this build; X/Z remain the keyboard attack input.
+requestAnimationFrame(()=>draw());
+</script></body></html>
